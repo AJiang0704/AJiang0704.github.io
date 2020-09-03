@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    
+    <title>阿江的秘密花园</title>
+    <meta charset="utf-8">
+    
+    <meta name="title" content="阿江的秘密花园">
+    <meta name="description" content="">
+    <meta property="og:image" content="/favicon.ico">
+    <meta property="og:image:width" content="200" />
+    <meta property="og:image:height" content="200" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Serif Pro', 'Source Han Serif SC', 'Noto Serif CJK SC', 'Noto Serif SC', serif;
+        }
+    </style>
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <link rel="stylesheet"
+        href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/styles/arduino-light.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/js/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+    <header class="header">
+    <div class="blog-title">
+        <a href="/" class="logo">阿江的秘密花园</a>
+    </div>
+    <nav class="navbar">
+        <ul class="menu">
+            
+            
+            
+            <li class="menu-item">
+                
+                <a href="/" class="current-menu-item-link">主页</a>
+                
+            </li>
+            
+            
+            
+            <li class="menu-item">
+                
+                <a href="/archives" class="menu-item-link">归档</a>
+                
+            </li>
+            
+            
+            
+            <li class="menu-item">
+                
+                <a href="/about" class="menu-item-link">关于</a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</header>
+    <main class="main">
+        <section class="posts">
+    
+    <article class="post">
+        <div class="post-title">
+            <a class="post-title-link" href="/2020/09/04/Slice/">Go语言学习笔记之Slice</a>
+        </div>
+        <div class="post-content">
+            
+            <blockquote>
+<p>切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。</p>
+</blockquote>
+<hr>
+<h3 id="初识Slice"><a href="#初识Slice" class="headerlink" title="初识Slice"></a>初识Slice</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">arr := [...]<span class="keyword">int</span>&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>&#125;</span><br><span class="line">s := arr[<span class="number">2</span>:<span class="number">6</span>]			<span class="comment">//s的值为[2,3,4,5]</span></span><br><span class="line">s := arr[:<span class="number">6</span>]			<span class="comment">//s的值为[0,1,2,3,4,5]</span></span><br><span class="line">s := arr[<span class="number">2</span>:]			<span class="comment">//s的值为[2,3,4,5,6,7]</span></span><br><span class="line">s := arr[:]			<span class="comment">//s的值为[0,1,2,3,4,5,6,7]</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">updateSlice</span><span class="params">(s []<span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">    s[<span class="number">0</span>] = <span class="number">100</span>			<span class="comment">//arr原始数据也会改变</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Slice本身没有数据，是对底层<code>array</code>的一个<code>view</code></p>
+<hr>
+<h3 id="Slice的扩展"><a href="#Slice的扩展" class="headerlink" title="Slice的扩展"></a>Slice的扩展</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arr := [...]<span class="keyword">int</span>&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>&#125;</span><br><span class="line">s1 := arr[<span class="number">2</span>:<span class="number">6</span>]			<span class="comment">//s1的值为[2,3,4,5]</span></span><br><span class="line">s2 := s1[<span class="number">3</span>:<span class="number">5</span>]			<span class="comment">//s2的值为[5,6]</span></span><br></pre></td></tr></table></figure>
+<p>Slice可以向后扩展，但不可以向前扩展</p>
+<hr>
+<h3 id="向Slice添加元素"><a href="#向Slice添加元素" class="headerlink" title="向Slice添加元素"></a>向Slice添加元素</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s2 := <span class="built_in">append</span>(s1,<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p>添加元素时如果超越<code>cap</code>，系统会重新分配更大的底层数组（如果原来的数组不用了，会被垃圾回收掉）</p>
+<hr>
+<h3 id="创建Slice"><a href="#创建Slice" class="headerlink" title="创建Slice"></a>创建Slice</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Creating slice</span></span><br><span class="line"><span class="keyword">var</span> s []<span class="keyword">int</span></span><br><span class="line"><span class="keyword">for</span> i :=<span class="number">0</span> ; i &lt; <span class="number">100</span> ; i++&#123;</span><br><span class="line">    s = <span class="built_in">append</span>(s, <span class="number">2</span> * i + <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s := []<span class="keyword">int</span>&#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">16</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">10</span>,<span class="number">32</span>)		<span class="comment">//len = 10，cap = 32</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="拷贝Slice"><a href="#拷贝Slice" class="headerlink" title="拷贝Slice"></a>拷贝Slice</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Copying slice</span></span><br><span class="line"><span class="built_in">copy</span>(s2,s1)</span><br><span class="line">printSlice(s2)</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="从Slice删除元素"><a href="#从Slice删除元素" class="headerlink" title="从Slice删除元素"></a>从Slice删除元素</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Deleting elements from slice</span></span><br><span class="line">s = <span class="built_in">append</span>(s[:<span class="number">3</span>],s[<span class="number">4</span>:]...)	<span class="comment">//删掉第4个元素，len减1，cap不变</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Popping from front</span></span><br><span class="line"><span class="comment">//front := s[0]</span></span><br><span class="line">s = s[<span class="number">1</span>:]</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Popping from back</span></span><br><span class="line"><span class="comment">//tail := s[len(s)-1]</span></span><br><span class="line">s = <span class="built_in">append</span>(:<span class="built_in">len</span>(s)<span class="number">-1</span>) </span><br></pre></td></tr></table></figure>
+<hr>
+
+            
+        </div>
+        <div class="post-meta">
+            
+            <span class="post-time">二〇二〇年九月四日</span>
+        </div>
+    </article>
+    
+</section>
+
+<p class="license"></p>
+    </main>
+</body>
+
+</html>
