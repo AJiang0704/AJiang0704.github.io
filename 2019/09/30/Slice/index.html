@@ -4,10 +4,10 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
     
-    <title>Go语言学习笔记之Slice阿江的秘密花园</title>
+    <title>Go语言学习笔记之Slice  阿江的秘密花园</title>
     <meta charset="utf-8">
     
-    <meta name="title" content="Go语言学习笔记之Slice阿江的秘密花园">
+    <meta name="title" content="Go语言学习笔记之Slice  阿江的秘密花园">
     <meta name="description" content="">
     <meta property="og:image" content="/favicon.ico">
     <meta property="og:image:width" content="200" />
@@ -109,12 +109,23 @@
 <h3 id="从Slice删除元素"><a href="#从Slice删除元素" class="headerlink" title="从Slice删除元素"></a>从Slice删除元素</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Deleting elements from slice</span></span><br><span class="line">s = <span class="built_in">append</span>(s[:<span class="number">3</span>],s[<span class="number">4</span>:]...)	<span class="comment">//删掉第4个元素，len减1，cap不变</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Popping from front</span></span><br><span class="line"><span class="comment">//front := s[0]</span></span><br><span class="line">s = s[<span class="number">1</span>:]</span><br></pre></td></tr></table></figure>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Popping from back</span></span><br><span class="line"><span class="comment">//tail := s[len(s)-1]</span></span><br><span class="line">s = <span class="built_in">append</span>(:<span class="built_in">len</span>(s)<span class="number">-1</span>) </span><br></pre></td></tr></table></figure>
+<p style="text-align: right;font-family: 仿宋;">二〇一九年九月三十日</p>
     </div>
     
 </article>
 
 <div class="prev_next">
     <nav id="prev_next">
+
+<div class="prev">
+    
+    <p>上一篇</p>
+    <a href="/2019/12/31/2019summary/"><div class="article-nav-title">年终扯淡</div></a>
+    
+</div>
+<div class="next">
+    
+</div>
 
 </nav>
 </div>
