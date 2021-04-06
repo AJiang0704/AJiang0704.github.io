@@ -4,10 +4,10 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
     
-    <title>阿江的秘密花园</title>
+    <title>系统综合实践-容器相关概念 阿江的秘密花园</title>
     <meta charset="utf-8">
     
-    <meta name="title" content="阿江的秘密花园">
+    <meta name="title" content="系统综合实践-容器相关概念 阿江的秘密花园">
     <meta name="description" content="">
     <meta property="og:image" content="/favicon.ico">
     <meta property="og:image:width" content="200" />
@@ -61,7 +61,7 @@ body {
             
             <li class="menu-item">
                 
-                <a href="/" class="current-menu-item-link">主页</a>
+                <a href="/" class="menu-item-link">主页</a>
                 
             </li>
             
@@ -93,15 +93,12 @@ body {
     </nav>
 </header>
     <main class="main">
-        <section class="posts">
-    
-    <article class="post">
-        <div class="post-title">
-            <a class="post-title-link" href="/2021/03/26/Microservices/">系统综合实践-容器相关概念</a>
-        </div>
-        <div class="post-content">
-            
-            <h3 id="一、微服务（Microservices）"><a href="#一、微服务（Microservices）" class="headerlink" title="一、微服务（Microservices）"></a>一、微服务（Microservices）</h3><p>微服务是一种软件架构风格，它是以专注于单一责任与功能的小型功能区块为基础，利用模块化的方式组合出复杂的大型应用程序，各功能区块使用与语言无关的API集相互通信。</p>
+        <article class="post">
+    <div class="post-title">
+        <h1 class="title">系统综合实践-容器相关概念</h2>
+    </div>
+    <div class="post-content">
+        <h3 id="一、微服务（Microservices）"><a href="#一、微服务（Microservices）" class="headerlink" title="一、微服务（Microservices）"></a>一、微服务（Microservices）</h3><p>微服务是一种软件架构风格，它是以专注于单一责任与功能的小型功能区块为基础，利用模块化的方式组合出复杂的大型应用程序，各功能区块使用与语言无关的API集相互通信。</p>
 <p>优：</p>
 <ol>
 <li>服务器的独立部署，耦合性底</li>
@@ -158,96 +155,35 @@ body {
 </li>
 </ul>
 <p style="text-align: right;font-family: 仿宋;">二〇二一年三月二十六日</p>
-            
-        </div>
-        <div class="post-meta">
+    </div>
+    <div class="post-meta">
 
-        </div>
-    </article>
+    </div>
+</article>
+
+<div class="prev_next">
+    <nav id="prev_next">
+
+<div class="prev">
     
-    <article class="post">
-        <div class="post-title">
-            <a class="post-title-link" href="/2019/12/31/2019summary/">年终扯淡</a>
-        </div>
-        <div class="post-content">
-            
-            <p>太用力的情感往往流于表面，太疯狂的誓言往往囿于人言。故人高台不得相见，岁月漫长，游走指间。</p>
-<p>这一年我依旧过得凄凄惨惨，疯狂追星，疯狂做梦。刚入学时买过一盒明信片，每一张的图案上都印着九个字“你在我梦里如此长久”。当时只瞧卡片文艺又好看，如今看起来却像是某种可笑的预言。</p>
-<p>这一年我为老华奔赴了两个城市，青岛和海口。我没有拍太多照片，因为我坚信最好的东西一定要留给眼睛和耳朵。也算遂了年少时的心愿。<br><br></p>
-<div align="center"><img src="https://i.loli.net/2020/02/21/sa8SYFIUPxEjKLA.jpg" alt="梦回五源河.jpg" width="80%" height="80%">
-<font color=gray size=2px>梦回五源河，图源@LAYearn-Yu</font></div>
-<br>
-要说2020也没有期望什么，只希望自己逃过锈迹斑斑的时间。然后祝自己学业顺利，平安康健。
-
-<p>2019，再也不见。</p>
-<p style="text-align: right;font-family: 仿宋;">二〇一九年十二月三十一日</p>
-            
-        </div>
-        <div class="post-meta">
-
-        </div>
-    </article>
+</div>
+<div class="next">
     
-    <article class="post">
-        <div class="post-title">
-            <a class="post-title-link" href="/2019/09/30/Slice/">Go语言学习笔记之Slice</a>
-        </div>
-        <div class="post-content">
-            
-            <blockquote>
-<p>切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。</p>
-</blockquote>
-<hr>
-<h3 id="一、初识Slice"><a href="#一、初识Slice" class="headerlink" title="一、初识Slice"></a>一、初识Slice</h3><pre><code class="Golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
-s := arr[2:6]              //s的值为[2,3,4,5]
-s := arr[:6]               //s的值为[0,1,2,3,4,5]
-s := arr[2:]               //s的值为[2,3,4,5,6,7]
-s := arr[:]                //s的值为[0,1,2,3,4,5,6,7]</code></pre>
-<pre><code class="Golang">func updateSlice(s []int)&#123;
-    s[0] = 100             //arr原始数据也会改变
-&#125;</code></pre>
-<p>Slice本身没有数据，是对底层<code>array</code>的一个<code>view</code></p>
-<hr>
-<h3 id="二、Slice的扩展"><a href="#二、Slice的扩展" class="headerlink" title="二、Slice的扩展"></a>二、Slice的扩展</h3><pre><code class="Golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
-s1 := arr[2:6]             //s1的值为[2,3,4,5]
-s2 := s1[3:5]              //s2的值为[5,6]</code></pre>
-<p>Slice可以向后扩展，但不可以向前扩展</p>
-<hr>
-<h3 id="三、向Slice添加元素"><a href="#三、向Slice添加元素" class="headerlink" title="三、向Slice添加元素"></a>三、向Slice添加元素</h3><pre><code class="Golang">s2 := append(s1,10)</code></pre>
-<p>添加元素时如果超越<code>cap</code>，系统会重新分配更大的底层数组（如果原来的数组不用了，会被垃圾回收掉）</p>
-<hr>
-<h3 id="四、创建Slice"><a href="#四、创建Slice" class="headerlink" title="四、创建Slice"></a>四、创建Slice</h3><pre><code class="Golang">//Creating slice
-var s []int
-for i :=0 ; i &lt; 100 ; i++&#123;
-    s = append(s, 2 * i + 1)
-&#125;</code></pre>
-<pre><code class="Golang">s := []int&#123;2,4,6,8&#125;</code></pre>
-<pre><code class="Golang">s := make([]int,16)</code></pre>
-<pre><code class="Golang">s := make([]int,10,32)     //len = 10，cap = 32</code></pre>
-<hr>
-<h3 id="五、拷贝Slice"><a href="#五、拷贝Slice" class="headerlink" title="五、拷贝Slice"></a>五、拷贝Slice</h3><pre><code class="Golang">//Copying slice
-copy(s2,s1)
-printSlice(s2)</code></pre>
-<hr>
-<h3 id="六、从Slice删除元素"><a href="#六、从Slice删除元素" class="headerlink" title="六、从Slice删除元素"></a>六、从Slice删除元素</h3><pre><code class="Golang">//Deleting elements from slice
-s = append(s[:3],s[4:]...) //删掉第4个元素，len减1，cap不变</code></pre>
-<pre><code class="Golang">//Popping from front
-//front := s[0]
-s = s[1:]</code></pre>
-<pre><code class="Golang">//Popping from back
-//tail := s[len(s)-1]
-s = append(:len(s)-1) </code></pre>
-<p style="text-align: right;font-family: 仿宋;">二〇一九年九月三十日</p>
-            
-        </div>
-        <div class="post-meta">
-
-        </div>
-    </article>
+    <p>下一篇</p>
+    <a href="/2019/12/31/2019summary/"><div class="article-nav-title">年终扯淡</div></a>
     
-</section>
+</div>
 
-<p class="license"></p>
+</nav>
+</div>
+
+<div class="post-comment">
+    
+
+
+
+</div>
+
     </main>
 
     <script language="Javascript">
