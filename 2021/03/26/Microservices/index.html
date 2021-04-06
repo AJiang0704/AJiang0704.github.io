@@ -52,7 +52,7 @@ body {
 <body>
     <header class="header">
     <div class="blog-title" align="middle">
-        <center><h1 style="text-align: right;font-family: 仿宋;">阿江的秘密花园</p></center>
+        
     </div>
     <nav class="navbar">
         <ul class="menu">
@@ -99,7 +99,7 @@ body {
     </div>
     <div class="post-content">
         <h3 id="一、微服务（Microservices）"><a href="#一、微服务（Microservices）" class="headerlink" title="一、微服务（Microservices）"></a>一、微服务（Microservices）</h3><p>微服务是一种软件架构风格，它是以专注于单一责任与功能的小型功能区块为基础，利用模块化的方式组合出复杂的大型应用程序，各功能区块使用与语言无关的API集相互通信。</p>
-<p>优：</p>
+<p><strong>优：</strong></p>
 <ol>
 <li>服务器的独立部署，耦合性底</li>
 <li>服务的快速启动，因为依赖的库少了，代码量也少了</li>
@@ -108,14 +108,14 @@ body {
 <li>服务可以动态按需扩容</li>
 <li>代码的复用，每个服务都提供REST、API</li>
 </ol>
-<p>劣：</p>
+<p><strong>劣：</strong></p>
 <ol>
 <li>分布式部署，调用的复杂性高</li>
 <li>独立的数据库，分布式事务的挑战</li>
 <li>测试的难度提升，API文档的管理尤为重要</li>
 <li>运维难度的提升</li>
 </ol>
-<p>部署：</p>
+<p><strong>部署：</strong></p>
 <ol>
 <li>基于主机（物理机或虚拟机）的多服务实例</li>
 <li>基于主机（物理机或虚拟机）的服务实例 基于单个虚拟机、单个容器</li>
@@ -126,7 +126,7 @@ body {
 <h3 id="二、Docker"><a href="#二、Docker" class="headerlink" title="二、Docker"></a>二、Docker</h3><p>镜像是构建Docker的基石，容器是基于镜像启动起来的。镜像是Docker生命周期中的构建或者打包阶段，而容器则是启动或执行阶段。</p>
 <hr>
 <h3 id="三、在Ubuntu上搭建Docker环境并实现基本操作"><a href="#三、在Ubuntu上搭建Docker环境并实现基本操作" class="headerlink" title="三、在Ubuntu上搭建Docker环境并实现基本操作"></a>三、在Ubuntu上搭建Docker环境并实现基本操作</h3><pre><code class="shell">curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun #官方安装脚本</code></pre>
-<p>基本指令：</p>
+<p><strong>基本指令：</strong></p>
 <ul>
 <li><p>列出镜像： <code>docker iamges  </code></p>
 </li>
