@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="cn">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="AJiang">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="AJiang">
+    
+    <meta name="keywords" content="AJiang's Blog,AJiang">
+    
+    <meta name="description" content="">
+    <meta name="description" content="本实验要求学生编制一个读单词过程，从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。（遇到错误时可显示“Error”，然后跳过错误部分继续进行）。 LexicalAnalyzer.cpp #include #include #include  int t &#x3D; -1; int pProject &#x3D; 0;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++实现词法分析程序">
+<meta property="og:url" content="https://ajiang0704.gitee.io/2021/05/27/9-LexicalAnalyzer/index.html">
+<meta property="og:site_name" content="AJiang&#39;s Blog">
+<meta property="og:description" content="本实验要求学生编制一个读单词过程，从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。（遇到错误时可显示“Error”，然后跳过错误部分继续进行）。 LexicalAnalyzer.cpp #include #include #include  int t &#x3D; -1; int pProject &#x3D; 0;">
+<meta property="og:locale">
+<meta property="og:image" content="https://i.loli.net/2021/05/27/bvfjk7KhM3E4GpC.png">
+<meta property="article:published_time" content="2021-05-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-26T18:57:57.401Z">
+<meta property="article:author" content="AJiang">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="编译原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/05/27/bvfjk7KhM3E4GpC.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>C++实现词法分析程序 · AJiang&#39;s Blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism-base16-ateliersulphurpool.light.css" type="text/css"></head>
+
+    
+        <body class="post-body">
+    
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >AJiang&#39;s Blog</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">C++实现词法分析程序</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>AJiang's Blog</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            C++实现词法分析程序
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "C++">C++</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "编译原理">编译原理</a>
+    
+</div>
+                
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/05/27</span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <p>本实验要求学生编制一个读单词过程，从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。（遇到错误时可显示“Error”，然后跳过错误部分继续进行）。</p>
+<p>LexicalAnalyzer.cpp</p>
+<pre class=" language-c++"><code class="language-c++">#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+int t = -1;
+int pProject = 0;
+
+/*****保留字*****/
+static char reserveWord[32][10] = &#123;
+    "auto", "break", "case", "char", "const", "continue", 
+    "default", "do", "double", "else", "enum", "extern", 
+    "float", "for", "goto", "if", "int", "long", "register", 
+    "return", "short", "signed", "sizeof", "static", 
+    "struct", "switch", "typedef", "union", "unsigned", 
+    "void", "volatile", "while"
+&#125;;
+
+/*****运算符*****/
+static char operatorWord[22][10] = &#123;
+    "+", "-", "*", "/", "%", "++","--","<", "<=", ">", ">=", 
+    "=", "==", "!=", "&", "&&", "|", "||", "!", "^","<<", ">>"
+&#125;;
+
+/*****分隔符*****/
+static char boredrWord[16][10] = &#123;
+    "(", ")", "[", "]", "&#123;", "&#125;", ";", ",", "\"", "\'", 
+    "#", "~", "\\", ".", "\?", ":"
+&#125;;
+
+/*****标识符*****/
+static  char identifier[1000][50] = &#123;""&#125;;
+
+/*****过滤源程序函数*****/
+int filtrationResource( char resourceProject[] , int end ) &#123;
+    char temp[10000]; 
+    int count = 0;
+    int i;
+    for( i = 0 ; i < end ; i++ ) &#123;
+        //过滤头文件 
+        if ( resourceProject[i] == '#' && resourceProject[i + 1] == 'i' && resourceProject[i + 2] == 'n' && resourceProject[i + 3] == 'c' 
+        && resourceProject[i + 4] == 'l' && resourceProject[i + 5] == 'u' && resourceProject[i + 6] == 'd' && resourceProject[i + 7] == 'e' ) &#123;
+            printf("(  头文件  ,  ");
+            while( resourceProject[i] !='<') &#123;
+                i++;
+            &#125;
+            while( resourceProject[i] != '\n' ) &#123;
+                printf("%c",resourceProject[i++]);
+            &#125;
+            printf("  )\n");
+        &#125; 
+
+
+        //删除单行注释
+        if ( resourceProject[i] == '/' && resourceProject[i + 1] == '/') &#123;
+            while( resourceProject[i] != '\n' ) &#123;
+                i++;
+            &#125;
+        &#125;
+
+        //删除多行注释
+        if ( resourceProject[i] == '/' && resourceProject[i + 1] == '*') &#123;
+            i = i + 2;
+            while( resourceProject[i] != '*' && resourceProject[i + 1] != '/') &#123;
+                i++;
+                if( i == end ) &#123;
+                    break;
+                &#125;
+            &#125;
+            i = i + 2;
+        &#125;
+
+        //删除换行符 制表符
+        if ( resourceProject[i] != '\n' && resourceProject[i] != '\t') &#123;
+            temp[count] = resourceProject[i];
+            count++;
+        &#125;
+    &#125;
+    temp[count] ='$';//末位增加结束符 
+    strcpy( resourceProject , temp );
+    return count;
+&#125;
+
+/*****查找保留字 1~32*****/
+int searchReserve(char reserveWord[][10], char s[]) &#123;
+    int i;
+    for ( i = 0; i < 32; i++ ) &#123;
+        if (strcmp(reserveWord[i], s) == 0) &#123;
+            i++;
+            return i;
+        &#125;
+    &#125;
+    return -1;
+
+&#125;
+
+/*****判断是否为数字*****/
+int IsDigit(char digit) &#123;
+    if (digit >= '0'&&digit <= '9') &#123;
+        return 1;
+    &#125;else &#123;
+        return 0;
+    &#125;
+&#125;
+
+/*****判断是否为字母*****/
+int IsLetter(char letter) &#123;
+    if ( (letter >= 'a'&&letter <= 'z') || (letter >= 'A'&&letter <= 'Z') || letter=='_') &#123;
+        return 1;
+    &#125;else &#123;
+       return 0;
+    &#125;
+&#125;
+
+int Scaning(char resourceProject[] , char token[]) &#123;
+    int i, count = 0;
+    char ch;
+    ch = resourceProject[pProject];
+
+    //过滤空格
+    while (ch ==' ') &#123;
+        pProject++;
+        ch = resourceProject[pProject];
+    &#125;
+
+    //每次收集前先清零
+    for (i = 0; i<20; i++) &#123;
+        token[i] = '\0';
+
+    &#125;
+
+    /*****判断运算符 33~54*****/
+    //加+ 减- 乘* 除/ 求余% 小于< 大于> 赋值= 非! 位与& 位或| 位异或^ 33~44
+    if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || 
+        ch == '<' || ch == '>' || ch == '=' || ch == '!' || ch == '&' ||
+        ch == '|' || ch == '^') &#123;
+        token[0] = resourceProject[pProject];
+        token[1] = '\0';
+        for (i = 0; i<22; i++) &#123;
+                if (strcmp(token, operatorWord[i]) == 0) &#123;
+                    t = 33 + i;
+                    break;
+                &#125;
+            &#125;
+        pProject++;
+        return t;
+    &#125;else if (resourceProject[pProject] == '+') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '+') &#123;         //自增++ 45
+            t = 45;
+        &#125;
+        pProject++;
+        return t;
+    &#125;else if (resourceProject[pProject] == '-') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '-') &#123;         //自减-- 46
+            t = 46;
+        &#125;
+        pProject++;
+        return t;
+    &#125;else if (resourceProject[pProject] == '<') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '=') &#123;         //小于等于<= 47
+            t = 47;
+        &#125;else if (resourceProject[pProject] == '<') &#123;   //左移<< 48
+            pProject--;
+            t = 48;
+        &#125;
+        pProject++;
+        return t;
+    &#125;else  if (resourceProject[pProject] == '>') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '=') &#123;         //大于等于>= 49
+            t = 49;
+        &#125;else if (resourceProject[pProject] == '>') &#123;   //右移>> 50
+            t = 50;
+        &#125;
+        pProject++;
+        return t;
+    &#125;else  if (resourceProject[pProject] == '=') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '=') &#123;         //等于== 51
+            t = 51;
+        &#125;
+        pProject++;
+        return t;
+    &#125;else  if (resourceProject[pProject] == '!') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '=') &#123;         //不等于!= 52
+            t = 52;
+        &#125;
+        pProject++;
+        return t;
+    &#125;else  if (resourceProject[pProject] == '&') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '&') &#123;         //逻辑与&& 53
+            t = 53;
+        &#125;
+        pProject++;
+        return t;
+    &#125; else  if (resourceProject[pProject] == '|') &#123;
+        pProject++;
+        if (resourceProject[pProject] == '|') &#123;         //逻辑或|| 54
+            t = 54;
+        &#125;
+        pProject++;
+        return t;
+    &#125;
+
+    /*****判断分隔符 55~70*****/
+    else if (ch == '(' || ch == ')' || ch == '[' || ch == ']' || ch == '&#123;' || 
+        ch == '&#125;' || ch == ';' || ch == ',' || ch == '\"' || ch == '\'' ||
+        ch == '#' || ch == '~' || ch == '\\' || ch == '.' || ch == '\?' ||
+        ch == ':') &#123;
+        token[0] = resourceProject[pProject];
+        token[1] = '\0';
+        for (i = 0; i<16; i++) &#123;
+                if (strcmp(token, boredrWord[i]) == 0) &#123;
+                    t = 55 + i;
+                    break;
+                &#125;
+            &#125;
+        pProject++;
+        return t;
+    &#125;
+
+    /*****判断字母*****/
+    else if (IsLetter(resourceProject[pProject])) &#123;
+            token[count] = resourceProject[pProject];
+            count++;
+            pProject++;
+            while (IsLetter(resourceProject[pProject]) || IsDigit(resourceProject[pProject])) &#123;
+                token[count++] = resourceProject[pProject];
+                pProject++;
+            &#125;
+
+            token[count] = '\0';
+            t =  searchReserve(reserveWord, token);
+            if (t == -1) &#123;
+                t = 100;
+            &#125;
+        return t;
+    &#125;
+
+    /*****判断常数*****/
+    else if (IsDigit(resourceProject[pProject])) &#123;
+        while (IsDigit(resourceProject[pProject])||(resourceProject[pProject]=='.'&&IsDigit(resourceProject[pProject+1]))) &#123;
+            token[count] = resourceProject[pProject];
+            count++;
+            pProject++;
+            t = 99;
+        &#125;
+        token[count] = '\0';
+        return t;
+    &#125;
+
+    /*****判断结束符*****/
+    else  if (resourceProject[pProject] == '$') &#123;     
+        t = 0;
+        return t;
+    &#125;
+
+    /*****判断错误*****/
+    else &#123;
+        printf("错误:非法字符%c！\n",ch);
+        pProject ++;
+        return -1;
+    &#125;
+
+
+&#125;
+
+int main() &#123;
+    //读取源程序
+    char resourceProject[10000];
+    char token[20] = &#123;0&#125;;
+    int i;
+    int end = 0;
+    FILE *fp;
+    if ( ( fp = fopen ( "data.txt","r") ) == NULL ) &#123;
+        printf("未找到源程序文档！");
+        return 0;
+    &#125;
+
+    //将源程序读入resourceProject数组
+    resourceProject[ pProject ] = fgetc(fp);
+    while(resourceProject[ pProject ] != EOF ) &#123;
+        pProject++;
+        resourceProject[ pProject ] = fgetc(fp);
+    &#125;
+    fclose(fp);
+    end = filtrationResource( resourceProject , pProject );
+    pProject = 0;
+
+    while (t != 0) &#123;
+        //扫描
+        t = Scaning(resourceProject, token);
+        if (t == 100) &#123;
+            for (i = 0; i<1000; i++) &#123;
+                if (strcmp(identifier[i], token) == 0) &#123;
+                    break;
+                &#125;
+                if (strcmp(identifier[i], "") == 0) &#123;
+                    strcpy(identifier[i], token);
+                    break;
+                &#125;
+            &#125;
+            printf("<%s,%d,标识符>\n", token,t);
+        &#125;else if (t == 99) &#123;
+            printf("<%s,%d,常数>\n", token,t);
+        &#125;else if (t >= 1 && t <= 32) &#123;
+            printf("<%s,%d,保留字>\n", reserveWord[t - 1],t);
+        &#125;else if (t >= 33 && t <= 54) &#123;
+            printf("<%s,%d,运算符>\n", operatorWord[t - 33],t);
+        &#125;else if (t >= 55 && t <= 70) &#123;
+            printf("<%s,%d,分隔符>\n", boredrWord[t - 55],t);
+        &#125;
+
+    &#125;
+    printf("扫描结束！");
+    return 0;
+&#125;</code></pre>
+<p>测试用例data.txt</p>
+<pre class=" language-c++"><code class="language-c++">if (a>b) &#123;a=_b@666+5.@5.5@555;&#125;
+//sisfsoij
+/*kcdjn*/
+else&#123;a=b;&#125;</code></pre>
+<p>实验结果</p>
+<p><img src="https://i.loli.net/2021/05/27/bvfjk7KhM3E4GpC.png" alt="实验结果.png"></p>
+
+    </article>
+    <!-- license  -->
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2021/05/23/8-JZ5/" title= "JZ5-用两个栈实现队列">
+                    <div class="prevTitle">JZ5-用两个栈实现队列</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "p5KlOzhAb5PNGyA0Kpv3CkMX-gzGzoHsz",
+        appKey: "O9ffEiE6x6X0dt0nuStUfR9X",
+        placeholder: "",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 9
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/27</span><a class="archive-post-title" href= "/2021/05/27/9-LexicalAnalyzer/" >C++实现词法分析程序</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/23</span><a class="archive-post-title" href= "/2021/05/23/8-JZ5/" >JZ5-用两个栈实现队列</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span><a class="archive-post-title" href= "/2021/05/22/3-k8s/" >从零开始部署k8s集群</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/26</span><a class="archive-post-title" href= "/2021/03/26/2-Docker/" >容器相关概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/23</span><a class="archive-post-title" href= "/2021/03/23/7-JZ4/" >JZ4-重建二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/20</span><a class="archive-post-title" href= "/2021/02/20/6-JZ3/" >JZ3-从头到尾打印链表</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/25</span><a class="archive-post-title" href= "/2021/01/25/5-JZ2/" >JZ2-替换空格</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/23</span><a class="archive-post-title" href= "/2021/01/23/4-JZ1/" >JZ1-二维数组的查找</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/30</span><a class="archive-post-title" href= "/2019/09/30/1-Slice/" >Go语言的Slice</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+    
+        <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="Ubuntu"><span class="iconfont-archer">&#xe606;</span>Ubuntu</span>
+    
+        <span class="sidebar-tag-name" data-tags="算法"><span class="iconfont-archer">&#xe606;</span>算法</span>
+    
+        <span class="sidebar-tag-name" data-tags="剑指Offer"><span class="iconfont-archer">&#xe606;</span>剑指Offer</span>
+    
+        <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
+    
+        <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
+    
+        <span class="sidebar-tag-name" data-tags="Golang"><span class="iconfont-archer">&#xe606;</span>Golang</span>
+    
+        <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
+    
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+    
+        <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
+    
+        <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
+    
+        <span class="sidebar-tag-name" data-tags="编译原理"><span class="iconfont-archer">&#xe606;</span>编译原理</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="系统综合实践"><span class="iconfont-archer">&#xe60a;</span>系统综合实践</span>
+    
+        <span class="sidebar-category-name" data-categories="剑指Offer"><span class="iconfont-archer">&#xe60a;</span>剑指Offer</span>
+    
+        <span class="sidebar-category-name" data-categories="Go语言学习笔记"><span class="iconfont-archer">&#xe60a;</span>Go语言学习笔记</span>
+    
+        <span class="sidebar-category-name" data-categories="编译原理"><span class="iconfont-archer">&#xe60a;</span>编译原理</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "AJiang"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
+     
+    </body>
+</html>
+
+

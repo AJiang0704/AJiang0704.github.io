@@ -11,7 +11,7 @@
 
 
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
     <meta name="author" content="AJiang">
     <meta name="renderer" content="webkit">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="初识Slice 切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。  arr :&#x3D; [...]int&amp;#123;0,1,2,3,4,5,6,7&amp;#125; s :&#x3D; arr[2:6]              &#x2F;&#x2F;s的值为[2,3,4,5] s :&#x3D; arr[:6]               &#x2F;">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-09-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-05-22T08:26:33.278Z">
+<meta property="article:modified_time" content="2021-05-26T18:56:12.933Z">
 <meta property="article:author" content="AJiang">
 <meta property="article:tag" content="Golang">
 <meta name="twitter:card" content="summary">
@@ -213,13 +213,13 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.1.1"></head>
+<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism-base16-ateliersulphurpool.light.css" type="text/css"></head>
 
     
         <body class="post-body">
     
     
-<header class="header">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
@@ -408,44 +408,44 @@ height:50vh;
         <h1 id="初识Slice"><a href="#初识Slice" class="headerlink" title="初识Slice"></a>初识Slice</h1><blockquote>
 <p>切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。</p>
 </blockquote>
-<pre><code class="Golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
+<pre class=" language-golang"><code class="language-golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
 s := arr[2:6]              //s的值为[2,3,4,5]
 s := arr[:6]               //s的值为[0,1,2,3,4,5]
 s := arr[2:]               //s的值为[2,3,4,5,6,7]
 s := arr[:]                //s的值为[0,1,2,3,4,5,6,7]</code></pre>
-<pre><code class="Golang">func updateSlice(s []int)&#123;
+<pre class=" language-golang"><code class="language-golang">func updateSlice(s []int)&#123;
     s[0] = 100             //arr原始数据也会改变
 &#125;</code></pre>
 <ul>
 <li>Slice本身没有数据，是对底层<code>array</code>的一个<code>view</code></li>
 </ul>
-<h1 id="Slice的扩展"><a href="#Slice的扩展" class="headerlink" title="Slice的扩展"></a>Slice的扩展</h1><pre><code class="Golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
+<h1 id="Slice的扩展"><a href="#Slice的扩展" class="headerlink" title="Slice的扩展"></a>Slice的扩展</h1><pre class=" language-golang"><code class="language-golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
 s1 := arr[2:6]             //s1的值为[2,3,4,5]
 s2 := s1[3:5]              //s2的值为[5,6]</code></pre>
 <ul>
 <li>Slice可以向后扩展，但不可以向前扩展</li>
 </ul>
-<h1 id="向Slice添加元素"><a href="#向Slice添加元素" class="headerlink" title="向Slice添加元素"></a>向Slice添加元素</h1><pre><code class="Golang">s2 := append(s1,10)</code></pre>
+<h1 id="向Slice添加元素"><a href="#向Slice添加元素" class="headerlink" title="向Slice添加元素"></a>向Slice添加元素</h1><pre class=" language-golang"><code class="language-golang">s2 := append(s1,10)</code></pre>
 <ul>
 <li>添加元素时如果超越<code>cap</code>，系统会重新分配更大的底层数组（如果原来的数组不用了，会被垃圾回收掉）</li>
 </ul>
-<h1 id="创建Slice"><a href="#创建Slice" class="headerlink" title="创建Slice"></a>创建Slice</h1><pre><code class="Golang">//Creating slice
+<h1 id="创建Slice"><a href="#创建Slice" class="headerlink" title="创建Slice"></a>创建Slice</h1><pre class=" language-golang"><code class="language-golang">//Creating slice
 var s []int
-for i :=0 ; i &lt; 100 ; i++&#123;
+for i :=0 ; i < 100 ; i++&#123;
     s = append(s, 2 * i + 1)
 &#125;</code></pre>
-<pre><code class="Golang">s := []int&#123;2,4,6,8&#125;</code></pre>
-<pre><code class="Golang">s := make([]int,16)</code></pre>
-<pre><code class="Golang">s := make([]int,10,32)     //len = 10，cap = 32</code></pre>
-<h1 id="拷贝Slice"><a href="#拷贝Slice" class="headerlink" title="拷贝Slice"></a>拷贝Slice</h1><pre><code class="Golang">//Copying slice
+<pre class=" language-golang"><code class="language-golang">s := []int&#123;2,4,6,8&#125;</code></pre>
+<pre class=" language-golang"><code class="language-golang">s := make([]int,16)</code></pre>
+<pre class=" language-golang"><code class="language-golang">s := make([]int,10,32)     //len = 10，cap = 32</code></pre>
+<h1 id="拷贝Slice"><a href="#拷贝Slice" class="headerlink" title="拷贝Slice"></a>拷贝Slice</h1><pre class=" language-golang"><code class="language-golang">//Copying slice
 copy(s2,s1)
 printSlice(s2)</code></pre>
-<h1 id="从Slice删除元素"><a href="#从Slice删除元素" class="headerlink" title="从Slice删除元素"></a>从Slice删除元素</h1><pre><code class="Golang">//Deleting elements from slice
+<h1 id="从Slice删除元素"><a href="#从Slice删除元素" class="headerlink" title="从Slice删除元素"></a>从Slice删除元素</h1><pre class=" language-golang"><code class="language-golang">//Deleting elements from slice
 s = append(s[:3],s[4:]...) //删掉第4个元素，len减1，cap不变</code></pre>
-<pre><code class="Golang">//Popping from front
+<pre class=" language-golang"><code class="language-golang">//Popping from front
 //front := s[0]
 s = s[1:]</code></pre>
-<pre><code class="Golang">//Popping from back
+<pre class=" language-golang"><code class="language-golang">//Popping from back
 //tail := s[len(s)-1]
 s = append(:len(s)-1) </code></pre>
 
@@ -457,8 +457,8 @@ s = append(:len(s)-1) </code></pre>
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href= "/2021/03/26/2-Docker/" title= "容器相关概念">
-                    <div class="nextTitle">容器相关概念</div>
+                <a href= "/2021/01/23/4-JZ1/" title= "JZ1-二维数组的查找">
+                    <div class="nextTitle">JZ1-二维数组的查找</div>
                 </a>
             
         </li>
@@ -602,9 +602,71 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 3
+        Total : 9
         </div>
         <!-- search  -->
         
@@ -620,12 +682,42 @@ top:50vh;
     
     
         <li class="archive-post-item">
+            <span class="archive-post-date">05/27</span><a class="archive-post-title" href= "/2021/05/27/9-LexicalAnalyzer/" >C++实现词法分析程序</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/23</span><a class="archive-post-title" href= "/2021/05/23/8-JZ5/" >JZ5-用两个栈实现队列</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
             <span class="archive-post-date">05/22</span><a class="archive-post-title" href= "/2021/05/22/3-k8s/" >从零开始部署k8s集群</a>
         </li>
     
     
         <li class="archive-post-item">
             <span class="archive-post-date">03/26</span><a class="archive-post-title" href= "/2021/03/26/2-Docker/" >容器相关概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/23</span><a class="archive-post-title" href= "/2021/03/23/7-JZ4/" >JZ4-重建二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/20</span><a class="archive-post-title" href= "/2021/02/20/6-JZ3/" >JZ3-从头到尾打印链表</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/25</span><a class="archive-post-title" href= "/2021/01/25/5-JZ2/" >JZ2-替换空格</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/23</span><a class="archive-post-title" href= "/2021/01/23/4-JZ1/" >JZ1-二维数组的查找</a>
         </li>
     
     
@@ -647,7 +739,7 @@ top:50vh;
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
-        <span class="sidebar-tag-name" data-tags="Golang"><span class="iconfont-archer">&#xe606;</span>Golang</span>
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
     
         <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
     
@@ -655,9 +747,29 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="Ubuntu"><span class="iconfont-archer">&#xe606;</span>Ubuntu</span>
     
+        <span class="sidebar-tag-name" data-tags="算法"><span class="iconfont-archer">&#xe606;</span>算法</span>
+    
+        <span class="sidebar-tag-name" data-tags="剑指Offer"><span class="iconfont-archer">&#xe606;</span>剑指Offer</span>
+    
+        <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
+    
         <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
     
-        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+        <span class="sidebar-tag-name" data-tags="Golang"><span class="iconfont-archer">&#xe606;</span>Golang</span>
+    
+        <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
+    
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+    
+        <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
+    
+        <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
+    
+        <span class="sidebar-tag-name" data-tags="编译原理"><span class="iconfont-archer">&#xe606;</span>编译原理</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
@@ -692,9 +804,13 @@ jsonContent:
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
     
+        <span class="sidebar-category-name" data-categories="系统综合实践"><span class="iconfont-archer">&#xe60a;</span>系统综合实践</span>
+    
+        <span class="sidebar-category-name" data-categories="剑指Offer"><span class="iconfont-archer">&#xe60a;</span>剑指Offer</span>
+    
         <span class="sidebar-category-name" data-categories="Go语言学习笔记"><span class="iconfont-archer">&#xe60a;</span>Go语言学习笔记</span>
     
-        <span class="sidebar-category-name" data-categories="系统综合实践"><span class="iconfont-archer">&#xe60a;</span>系统综合实践</span>
+        <span class="sidebar-category-name" data-categories="编译原理"><span class="iconfont-archer">&#xe60a;</span>编译原理</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
@@ -727,7 +843,7 @@ jsonContent:
     </div>
     <!-- async load share.js -->
     
-        <script src="/scripts/share.js" async></script>    
+        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
      
     </body>
 </html>
