@@ -20,12 +20,12 @@
     <meta name="keywords" content="AJiang's Blog,AJiang">
     
     <meta name="description" content="">
-    <meta name="description" content="题目描述在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。 [   [1,2,8,9],   [2,4,9,12],   [4,7,10,13],   [6,8,11,15] ] 给定 target &#x3D; 7，返回 true。 给定 target &#x3D; 3，返回">
+    <meta name="description" content="题目描述在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。 [  [1,2,8,9],  [2,4,9,12],  [4,7,10,13],  [6,8,11,15]] 给定 target &#x3D; 7，返回 true。 给定 target &#x3D; 3，返回 fals">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JZ1-二维数组的查找">
 <meta property="og:url" content="https://ajiang0704.gitee.io/2021/01/23/4-JZ1/index.html">
 <meta property="og:site_name" content="AJiang&#39;s Blog">
-<meta property="og:description" content="题目描述在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。 [   [1,2,8,9],   [2,4,9,12],   [4,7,10,13],   [6,8,11,15] ] 给定 target &#x3D; 7，返回 true。 给定 target &#x3D; 3，返回">
+<meta property="og:description" content="题目描述在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。 [  [1,2,8,9],  [2,4,9,12],  [4,7,10,13],  [6,8,11,15]] 给定 target &#x3D; 7，返回 true。 给定 target &#x3D; 3，返回 fals">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-01-22T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-05-23T02:52:51.030Z">
@@ -215,7 +215,7 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism-dracula.css" type="text/css"></head>
 
     
         <body class="post-body">
@@ -412,18 +412,14 @@ height:50vh;
             <main class="main post-page">
     <article class="article-entry">
         <h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p>
-<pre class=" language-c"><code class="language-c"><span class="token punctuation">[</span>
-  <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">[</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">,</span><span class="token number">15</span><span class="token punctuation">]</span>
-<span class="token punctuation">]</span></code></pre>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">  [<span class="number">1</span>,<span class="number">2</span>,<span class="number">8</span>,<span class="number">9</span>],</span><br><span class="line">  [<span class="number">2</span>,<span class="number">4</span>,<span class="number">9</span>,<span class="number">12</span>],</span><br><span class="line">  [<span class="number">4</span>,<span class="number">7</span>,<span class="number">10</span>,<span class="number">13</span>],</span><br><span class="line">  [<span class="number">6</span>,<span class="number">8</span>,<span class="number">11</span>,<span class="number">15</span>]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <p>给定 target = 7，返回 true。</p>
 <p>给定 target = 3，返回 false。</p>
-<h2 id="示例一"><a href="#示例一" class="headerlink" title="示例一"></a>示例一</h2><h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><pre class=" language-c"><code class="language-c"><span class="token number">7</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">,</span><span class="token number">15</span><span class="token punctuation">]</span><span class="token punctuation">]</span></code></pre>
-<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><pre class=" language-c"><code class="language-c">true</code></pre>
-<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><pre class=" language-c"><code class="language-c">存在<span class="token number">7</span>，返回true</code></pre>
+<h2 id="示例一"><a href="#示例一" class="headerlink" title="示例一"></a>示例一</h2><h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">7</span>,[[<span class="number">1</span>,<span class="number">2</span>,<span class="number">8</span>,<span class="number">9</span>],[<span class="number">2</span>,<span class="number">4</span>,<span class="number">9</span>,<span class="number">12</span>],[<span class="number">4</span>,<span class="number">7</span>,<span class="number">10</span>,<span class="number">13</span>],[<span class="number">6</span>,<span class="number">8</span>,<span class="number">11</span>,<span class="number">15</span>]]</span><br></pre></td></tr></table></figure>
 
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">存在<span class="number">7</span>，返回<span class="literal">true</span></span><br></pre></td></tr></table></figure>
     </article>
     <!-- license  -->
     
@@ -727,6 +723,8 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
     
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+    
         <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
     
         <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
@@ -735,17 +733,15 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
     
-        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
-    
-        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
-    
         <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
     
-        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
     
         <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
     
         <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
     
         <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
     

@@ -20,21 +20,21 @@
     <meta name="keywords" content="AJiang's Blog,AJiang">
     
     <meta name="description" content="">
-    <meta name="description" content="本实验要求学生编制一个读单词过程，从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。（遇到错误时可显示“Error”，然后跳过错误部分继续进行）。 LexicalAnalyzer.cpp #include #include #include  int t &#x3D; -1; int pProject &#x3D; 0;">
+    <meta name="description" content="词法分析的目的是将输入的源程序进行划分，给出基本符号（token）的序列，并掠过注解和空格等分隔符号。基本符号是与输入的语言定义的词法所规定的终结符。本文编制了一个读单词过程。从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。遇到错误时提示，然后跳过错误部分继续进行。  LexicalAnalyzer.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++实现词法分析程序">
 <meta property="og:url" content="https://ajiang0704.gitee.io/2021/05/27/9-LexicalAnalyzer/index.html">
 <meta property="og:site_name" content="AJiang&#39;s Blog">
-<meta property="og:description" content="本实验要求学生编制一个读单词过程，从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。（遇到错误时可显示“Error”，然后跳过错误部分继续进行）。 LexicalAnalyzer.cpp #include #include #include  int t &#x3D; -1; int pProject &#x3D; 0;">
+<meta property="og:description" content="词法分析的目的是将输入的源程序进行划分，给出基本符号（token）的序列，并掠过注解和空格等分隔符号。基本符号是与输入的语言定义的词法所规定的终结符。本文编制了一个读单词过程。从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。遇到错误时提示，然后跳过错误部分继续进行。  LexicalAnalyzer.">
 <meta property="og:locale">
-<meta property="og:image" content="https://i.loli.net/2021/05/27/bvfjk7KhM3E4GpC.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/27/E6vaLlXWJwZ9xoF.png">
 <meta property="article:published_time" content="2021-05-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-05-26T19:50:39.463Z">
+<meta property="article:modified_time" content="2021-05-27T04:19:53.267Z">
 <meta property="article:author" content="AJiang">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="编译原理">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.loli.net/2021/05/27/bvfjk7KhM3E4GpC.png">
+<meta name="twitter:image" content="https://i.loli.net/2021/05/27/E6vaLlXWJwZ9xoF.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     
@@ -216,7 +216,7 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism-dracula.css" type="text/css"></head>
 
     
         <body class="post-body">
@@ -410,336 +410,13 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <p>本实验要求学生编制一个读单词过程，从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。（遇到错误时可显示“Error”，然后跳过错误部分继续进行）。</p>
-<p>LexicalAnalyzer.cpp</p>
-<pre class=" language-c++"><code class="language-c++">#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
+        <blockquote>
+<p>词法分析的目的是将输入的源程序进行划分，给出基本符号（token）的序列，并掠过注解和空格等分隔符号。基本符号是与输入的语言定义的词法所规定的终结符。<br>本文编制了一个读单词过程。从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。遇到错误时提示，然后跳过错误部分继续进行。</p>
+</blockquote>
+<h5 id="LexicalAnalyzer-cpp"><a href="#LexicalAnalyzer-cpp" class="headerlink" title="LexicalAnalyzer.cpp"></a>LexicalAnalyzer.cpp</h5><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> t = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">int</span> pProject = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*32个保留字*/</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> reserveWord[<span class="number">32</span>][<span class="number">10</span>] = &#123;</span><br><span class="line">    <span class="string">&quot;auto&quot;</span>, <span class="string">&quot;break&quot;</span>, <span class="string">&quot;case&quot;</span>, <span class="string">&quot;char&quot;</span>, <span class="string">&quot;const&quot;</span>, <span class="string">&quot;continue&quot;</span>, <span class="string">&quot;default&quot;</span>, <span class="string">&quot;do&quot;</span>, <span class="string">&quot;double&quot;</span>, </span><br><span class="line">    <span class="string">&quot;else&quot;</span>, <span class="string">&quot;enum&quot;</span>, <span class="string">&quot;extern&quot;</span>, <span class="string">&quot;float&quot;</span>, <span class="string">&quot;for&quot;</span>, <span class="string">&quot;goto&quot;</span>, <span class="string">&quot;if&quot;</span>, <span class="string">&quot;int&quot;</span>, <span class="string">&quot;long&quot;</span>, <span class="string">&quot;register&quot;</span>, </span><br><span class="line">    <span class="string">&quot;return&quot;</span>, <span class="string">&quot;short&quot;</span>, <span class="string">&quot;signed&quot;</span>, <span class="string">&quot;sizeof&quot;</span>, <span class="string">&quot;static&quot;</span>, <span class="string">&quot;struct&quot;</span>, <span class="string">&quot;switch&quot;</span>, <span class="string">&quot;typedef&quot;</span>, </span><br><span class="line">    <span class="string">&quot;union&quot;</span>, <span class="string">&quot;unsigned&quot;</span>, <span class="string">&quot;void&quot;</span>, <span class="string">&quot;volatile&quot;</span>, <span class="string">&quot;while&quot;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*22个运算符*/</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> operatorWord[<span class="number">22</span>][<span class="number">10</span>] = &#123;</span><br><span class="line">    <span class="string">&quot;+&quot;</span>, <span class="string">&quot;-&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;%&quot;</span>, <span class="string">&quot;++&quot;</span>,<span class="string">&quot;--&quot;</span>,<span class="string">&quot;&lt;&quot;</span>, <span class="string">&quot;&lt;=&quot;</span>, <span class="string">&quot;&gt;&quot;</span>, <span class="string">&quot;&gt;=&quot;</span>, <span class="string">&quot;=&quot;</span>, <span class="string">&quot;==&quot;</span>, <span class="string">&quot;!=&quot;</span>, <span class="string">&quot;&amp;&quot;</span>, <span class="string">&quot;&amp;&amp;&quot;</span>, </span><br><span class="line">    <span class="string">&quot;|&quot;</span>, <span class="string">&quot;||&quot;</span>, <span class="string">&quot;!&quot;</span>, <span class="string">&quot;^&quot;</span>,<span class="string">&quot;&lt;&lt;&quot;</span>, <span class="string">&quot;&gt;&gt;&quot;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*16个分隔符*/</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> boredrWord[<span class="number">16</span>][<span class="number">10</span>] = &#123;</span><br><span class="line">    <span class="string">&quot;(&quot;</span>, <span class="string">&quot;)&quot;</span>, <span class="string">&quot;[&quot;</span>, <span class="string">&quot;]&quot;</span>, <span class="string">&quot;&#123;&quot;</span>, <span class="string">&quot;&#125;&quot;</span>, <span class="string">&quot;;&quot;</span>, <span class="string">&quot;,&quot;</span>, <span class="string">&quot;\&quot;&quot;</span>, <span class="string">&quot;\&#x27;&quot;</span>, <span class="string">&quot;#&quot;</span>, <span class="string">&quot;~&quot;</span>, <span class="string">&quot;\\&quot;</span>, <span class="string">&quot;.&quot;</span>, <span class="string">&quot;\?&quot;</span>, <span class="string">&quot;:&quot;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*标识符*/</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> identifier[<span class="number">1000</span>][<span class="number">50</span>] = &#123;<span class="string">&quot;&quot;</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*过滤源程序函数*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">filtrationResource</span><span class="params">( <span class="keyword">char</span> resourceProject[] , <span class="keyword">int</span> <span class="built_in">end</span> )</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> temp[<span class="number">10000</span>]; </span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">for</span>( i = <span class="number">0</span> ; i &lt; <span class="built_in">end</span> ; i ++ ) &#123;</span><br><span class="line">		<span class="comment">//过滤头文件 </span></span><br><span class="line">		<span class="keyword">if</span>( resourceProject[i] == <span class="string">&#x27;#&#x27;</span> &amp;&amp; resourceProject[i + <span class="number">1</span>] == <span class="string">&#x27;i&#x27;</span> &amp;&amp; </span><br><span class="line">			resourceProject[i + <span class="number">2</span>] == <span class="string">&#x27;n&#x27;</span> &amp;&amp; resourceProject[i + <span class="number">3</span>] == <span class="string">&#x27;c&#x27;</span> &amp;&amp; </span><br><span class="line">			resourceProject[i + <span class="number">4</span>] == <span class="string">&#x27;l&#x27;</span> &amp;&amp; resourceProject[i + <span class="number">5</span>] == <span class="string">&#x27;u&#x27;</span> &amp;&amp; </span><br><span class="line">			resourceProject[i + <span class="number">6</span>] == <span class="string">&#x27;d&#x27;</span> &amp;&amp; resourceProject[i + <span class="number">7</span>] == <span class="string">&#x27;e&#x27;</span> ) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;(  头文件  ,  &quot;</span>);</span><br><span class="line">			<span class="keyword">while</span>( resourceProject[i] !=<span class="string">&#x27;&lt;&#x27;</span>) &#123;</span><br><span class="line">				i ++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">while</span>( resourceProject[i] != <span class="string">&#x27;\n&#x27;</span> ) &#123;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,resourceProject[i++]);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;  )\n&quot;</span>);</span><br><span class="line">		&#125; </span><br><span class="line">		 </span><br><span class="line"></span><br><span class="line">		<span class="comment">//删除单行注释</span></span><br><span class="line">		<span class="keyword">if</span>( resourceProject[i] == <span class="string">&#x27;/&#x27;</span> &amp;&amp; resourceProject[i + <span class="number">1</span>] == <span class="string">&#x27;/&#x27;</span> ) &#123;</span><br><span class="line">			<span class="keyword">while</span>( resourceProject[i] != <span class="string">&#x27;\n&#x27;</span> ) &#123;</span><br><span class="line">				i ++;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//删除多行注释</span></span><br><span class="line">		<span class="keyword">if</span>( resourceProject[i] == <span class="string">&#x27;/&#x27;</span> &amp;&amp; resourceProject[i + <span class="number">1</span>] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">			i = i + <span class="number">2</span>;</span><br><span class="line">			<span class="keyword">while</span>( resourceProject[i] != <span class="string">&#x27;*&#x27;</span> &amp;&amp; resourceProject[i + <span class="number">1</span>] != <span class="string">&#x27;/&#x27;</span> ) &#123;</span><br><span class="line">				i ++;</span><br><span class="line">				<span class="keyword">if</span>( i == <span class="built_in">end</span> ) &#123;</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			i = i + <span class="number">2</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//删除换行符 制表符</span></span><br><span class="line">		<span class="keyword">if</span>( resourceProject[i] != <span class="string">&#x27;\n&#x27;</span> &amp;&amp; resourceProject[i] != <span class="string">&#x27;\t&#x27;</span> ) &#123;</span><br><span class="line">			temp[count] = resourceProject[i];</span><br><span class="line">			count ++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	temp[count] =<span class="string">&#x27;$&#x27;</span>;<span class="comment">//末位增加结束符 </span></span><br><span class="line">	<span class="built_in">strcpy</span>( resourceProject , temp );</span><br><span class="line">	<span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*判断是否为数字*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">IsDigit</span><span class="params">( <span class="keyword">char</span> digit )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>( digit &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; digit &lt;= <span class="string">&#x27;9&#x27;</span> ) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*判断是否为字母*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">IsLetter</span><span class="params">( <span class="keyword">char</span> letter )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>( (letter &gt;= <span class="string">&#x27;a&#x27;</span>&amp;&amp;letter &lt;= <span class="string">&#x27;z&#x27;</span>) || (letter &gt;= <span class="string">&#x27;A&#x27;</span>&amp;&amp;letter &lt;= <span class="string">&#x27;Z&#x27;</span>) || letter==<span class="string">&#x27;_&#x27;</span>) &#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*查找保留字 种别码1~32*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">searchReserve</span><span class="params">( <span class="keyword">char</span> reserveWord[][<span class="number">10</span>] , <span class="keyword">char</span> s[] )</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++ ) &#123;</span><br><span class="line">		<span class="keyword">if</span>( <span class="built_in">strcmp</span>(reserveWord[i], s) == <span class="number">0</span> ) &#123;</span><br><span class="line">			i ++;</span><br><span class="line">			<span class="keyword">return</span> i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*扫描*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Scaning</span><span class="params">( <span class="keyword">char</span> resourceProject[] , <span class="keyword">char</span> token[] )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    ch = resourceProject[pProject];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//过滤空格</span></span><br><span class="line">    <span class="keyword">while</span>( ch == <span class="string">&#x27; &#x27;</span> ) &#123;</span><br><span class="line">        pProject ++;</span><br><span class="line">        ch = resourceProject[pProject];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//每次收集前先清零</span></span><br><span class="line">    <span class="keyword">for</span>( i = <span class="number">0</span>; i&lt;<span class="number">20</span>; i ++ ) &#123;</span><br><span class="line">        token[i] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">   </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*查找运算符 种别码33~54*/</span></span><br><span class="line">    <span class="comment">//加+ 减- 乘* 除/ 求余% 小于&lt; 大于&gt; 赋值= 非! 位与&amp; 位或| 位异或^ 33~44</span></span><br><span class="line">    <span class="keyword">if</span>( ch == <span class="string">&#x27;+&#x27;</span> || ch == <span class="string">&#x27;-&#x27;</span> || ch == <span class="string">&#x27;*&#x27;</span> || ch == <span class="string">&#x27;/&#x27;</span> || ch == <span class="string">&#x27;%&#x27;</span> || </span><br><span class="line">        ch == <span class="string">&#x27;&lt;&#x27;</span> || ch == <span class="string">&#x27;&gt;&#x27;</span> || ch == <span class="string">&#x27;=&#x27;</span> || ch == <span class="string">&#x27;!&#x27;</span> || ch == <span class="string">&#x27;&amp;&#x27;</span> ||</span><br><span class="line">        ch == <span class="string">&#x27;|&#x27;</span> || ch == <span class="string">&#x27;^&#x27;</span>) &#123;</span><br><span class="line">		token[<span class="number">0</span>] = resourceProject[pProject];</span><br><span class="line">		token[<span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">		<span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; <span class="number">22</span>; i ++ ) &#123;</span><br><span class="line">            	<span class="keyword">if</span>( <span class="built_in">strcmp</span>(token, operatorWord[i]) == <span class="number">0</span>) &#123;</span><br><span class="line">            	    t = <span class="number">33</span> + i;</span><br><span class="line">            	    <span class="keyword">break</span>;</span><br><span class="line">            	&#125;</span><br><span class="line">        	&#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;+&#x27;</span> ) &#123;</span><br><span class="line">        pProject++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;+&#x27;</span> ) &#123;         <span class="comment">//自增++ 45</span></span><br><span class="line">            t = <span class="number">45</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;-&#x27;</span> ) &#123;</span><br><span class="line">        pProject++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;-&#x27;</span> ) &#123;         <span class="comment">//自减-- 46</span></span><br><span class="line">            t = <span class="number">46</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;&lt;&#x27;</span> ) &#123;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;=&#x27;</span> ) &#123;         <span class="comment">//小于等于&lt;= 47</span></span><br><span class="line">            t = <span class="number">47</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;&lt;&#x27;</span> ) &#123;   <span class="comment">//左移&lt;&lt; 48</span></span><br><span class="line">            pProject --;</span><br><span class="line">            t = <span class="number">48</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;&gt;&#x27;</span> ) &#123;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;=&#x27;</span> ) &#123;         <span class="comment">//大于等于&gt;= 49</span></span><br><span class="line">            t = <span class="number">49</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;&gt;&#x27;</span> ) &#123;   <span class="comment">//右移&gt;&gt; 50</span></span><br><span class="line">            t = <span class="number">50</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;=&#x27;</span> ) &#123;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;=&#x27;</span> ) &#123;         <span class="comment">//等于== 51</span></span><br><span class="line">            t = <span class="number">51</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;!&#x27;</span> ) &#123;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;=&#x27;</span> ) &#123;         <span class="comment">//不等于!= 52</span></span><br><span class="line">            t = <span class="number">52</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;&amp;&#x27;</span> ) &#123;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;&amp;&#x27;</span> ) &#123;         <span class="comment">//逻辑与&amp;&amp; 53</span></span><br><span class="line">            t = <span class="number">53</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;|&#x27;</span> ) &#123;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;|&#x27;</span> ) &#123;         <span class="comment">//逻辑或|| 54</span></span><br><span class="line">            t = <span class="number">54</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/*查找分隔符 种别码55~70*/</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( ch == <span class="string">&#x27;(&#x27;</span> || ch == <span class="string">&#x27;)&#x27;</span> || ch == <span class="string">&#x27;[&#x27;</span> || ch == <span class="string">&#x27;]&#x27;</span> || ch == <span class="string">&#x27;&#123;&#x27;</span> || </span><br><span class="line">        ch == <span class="string">&#x27;&#125;&#x27;</span> || ch == <span class="string">&#x27;;&#x27;</span> || ch == <span class="string">&#x27;,&#x27;</span> || ch == <span class="string">&#x27;\&quot;&#x27;</span> || ch == <span class="string">&#x27;\&#x27;&#x27;</span> ||</span><br><span class="line">        ch == <span class="string">&#x27;#&#x27;</span> || ch == <span class="string">&#x27;~&#x27;</span> || ch == <span class="string">&#x27;\\&#x27;</span> || ch == <span class="string">&#x27;.&#x27;</span> || ch == <span class="string">&#x27;\?&#x27;</span> ||</span><br><span class="line">        ch == <span class="string">&#x27;:&#x27;</span>) &#123;</span><br><span class="line">		token[<span class="number">0</span>] = resourceProject[pProject];</span><br><span class="line">		token[<span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">		<span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; <span class="number">16</span>; i ++ ) &#123;</span><br><span class="line">            	<span class="keyword">if</span> ( <span class="built_in">strcmp</span>(token, boredrWord[i]) == <span class="number">0</span> ) &#123;</span><br><span class="line">            	    t = <span class="number">55</span> + i;</span><br><span class="line">            	    <span class="keyword">break</span>;</span><br><span class="line">            	&#125;</span><br><span class="line">        	&#125;</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*查找标识符 种别码100*/</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( IsLetter(resourceProject[pProject]) ) &#123;</span><br><span class="line">            token[count] = resourceProject[pProject];</span><br><span class="line">            count ++;</span><br><span class="line">            pProject ++;</span><br><span class="line">            <span class="keyword">while</span>( IsLetter(resourceProject[pProject]) || </span><br><span class="line">                   IsDigit(resourceProject[pProject]) ) &#123;</span><br><span class="line">                token[count++] = resourceProject[pProject];</span><br><span class="line">                pProject ++;</span><br><span class="line">            &#125;</span><br><span class="line">            token[count] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">            t =  searchReserve(reserveWord, token);</span><br><span class="line">            <span class="keyword">if</span>( t == <span class="number">-1</span> ) &#123;</span><br><span class="line">                t = <span class="number">100</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*查找常数 种别码99*/</span></span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>( IsDigit(resourceProject[pProject]) ) &#123;</span><br><span class="line">        <span class="keyword">while</span>( IsDigit(resourceProject[pProject]) || </span><br><span class="line">             ( resourceProject[pProject]==<span class="string">&#x27;.&#x27;</span> &amp;&amp; IsDigit(resourceProject[pProject+<span class="number">1</span>]) ) </span><br><span class="line">             ) &#123;</span><br><span class="line">            token[count] = resourceProject[pProject];</span><br><span class="line">			count ++;</span><br><span class="line">			pProject ++;</span><br><span class="line">			t = <span class="number">99</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		token[count] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查找结束符</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( resourceProject[pProject] == <span class="string">&#x27;$&#x27;</span> ) &#123;     </span><br><span class="line">        t = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//错误输出</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;错误:非法字符%c！\n&quot;</span>,ch);</span><br><span class="line">        pProject ++;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//读取源程序</span></span><br><span class="line">	<span class="keyword">char</span> resourceProject[<span class="number">10000</span>];</span><br><span class="line">	<span class="keyword">char</span> token[<span class="number">20</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">end</span> = <span class="number">0</span>;</span><br><span class="line">	FILE *fp;</span><br><span class="line">	<span class="keyword">if</span>( ( fp = fopen ( <span class="string">&quot;data.txt&quot;</span>,<span class="string">&quot;r&quot;</span>) ) == <span class="literal">NULL</span> ) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;未找到源程序文档data.txt！&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//将源程序读入resourceProject数组</span></span><br><span class="line">	resourceProject[pProject] = fgetc(fp);</span><br><span class="line">	<span class="keyword">while</span>( resourceProject[pProject] != EOF ) &#123;</span><br><span class="line">		pProject ++;</span><br><span class="line">		resourceProject[pProject] = fgetc(fp);</span><br><span class="line">	&#125;</span><br><span class="line">	fclose(fp);</span><br><span class="line">	<span class="built_in">end</span> = filtrationResource( resourceProject , pProject );</span><br><span class="line">	pProject = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>( t != <span class="number">0</span> ) &#123;</span><br><span class="line">        <span class="comment">//扫描</span></span><br><span class="line">        t = Scaning(resourceProject, token);</span><br><span class="line">        <span class="keyword">if</span>( t == <span class="number">100</span> ) &#123;</span><br><span class="line">            <span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i ++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span>( <span class="built_in">strcmp</span>(identifier[i], token) == <span class="number">0</span> ) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>( <span class="built_in">strcmp</span>(identifier[i], <span class="string">&quot;&quot;</span>) == <span class="number">0</span> ) &#123;</span><br><span class="line">                    <span class="built_in">strcpy</span>(identifier[i], token);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;&lt; %s , %d , 标识符&gt;\n&quot;</span>, token,t);</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( t == <span class="number">99</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;&lt; %s , %d , 常数&gt;\n&quot;</span>, token,t);</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( t &gt;= <span class="number">1</span> &amp;&amp; t &lt;= <span class="number">32</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;&lt; %s , %d , 保留字&gt;\n&quot;</span>, reserveWord[t - <span class="number">1</span>],t);</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( t &gt;= <span class="number">33</span> &amp;&amp; t &lt;= <span class="number">54</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;&lt; %s , %d , 运算符&gt;\n&quot;</span>, operatorWord[t - <span class="number">33</span>],t);</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( t &gt;= <span class="number">55</span> &amp;&amp; t &lt;= <span class="number">70</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;&lt; %s, %d , 分隔符&gt;\n&quot;</span>, boredrWord[t - <span class="number">55</span>],t);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;扫描结束！&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="源程序文档-data-txt"><a href="#源程序文档-data-txt" class="headerlink" title="源程序文档 data.txt"></a>源程序文档 data.txt</h5><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (a&gt;b) &#123;a=_b@<span class="number">666</span>+<span class="number">5.</span>@<span class="number">5.5</span>@<span class="number">555</span>;&#125;</span><br><span class="line"><span class="comment">//sisfsoij</span></span><br><span class="line"><span class="comment">/*kcdjn*/</span></span><br><span class="line"><span class="keyword">else</span>&#123;a=b;&#125;</span><br></pre></td></tr></table></figure>
 
-int t = -1;
-int pProject = 0;
-
-/*****保留字*****/
-static char reserveWord[32][10] = &#123;
-    "auto", "break", "case", "char", "const", "continue", 
-    "default", "do", "double", "else", "enum", "extern", 
-    "float", "for", "goto", "if", "int", "long", "register", 
-    "return", "short", "signed", "sizeof", "static", 
-    "struct", "switch", "typedef", "union", "unsigned", 
-    "void", "volatile", "while"
-&#125;;
-
-/*****运算符*****/
-static char operatorWord[22][10] = &#123;
-    "+", "-", "*", "/", "%", "++","--","<", "<=", ">", ">=", 
-    "=", "==", "!=", "&", "&&", "|", "||", "!", "^","<<", ">>"
-&#125;;
-
-/*****分隔符*****/
-static char boredrWord[16][10] = &#123;
-    "(", ")", "[", "]", "&#123;", "&#125;", ";", ",", "\"", "\'", 
-    "#", "~", "\\", ".", "\?", ":"
-&#125;;
-
-/*****标识符*****/
-static  char identifier[1000][50] = &#123;""&#125;;
-
-/*****过滤源程序函数*****/
-int filtrationResource( char resourceProject[] , int end ) &#123;
-    char temp[10000]; 
-    int count = 0;
-    int i;
-    for( i = 0 ; i < end ; i++ ) &#123;
-        //过滤头文件 
-        if ( resourceProject[i] == '#' && resourceProject[i + 1] == 'i' && resourceProject[i + 2] == 'n' && resourceProject[i + 3] == 'c' 
-        && resourceProject[i + 4] == 'l' && resourceProject[i + 5] == 'u' && resourceProject[i + 6] == 'd' && resourceProject[i + 7] == 'e' ) &#123;
-            printf("(  头文件  ,  ");
-            while( resourceProject[i] !='<') &#123;
-                i++;
-            &#125;
-            while( resourceProject[i] != '\n' ) &#123;
-                printf("%c",resourceProject[i++]);
-            &#125;
-            printf("  )\n");
-        &#125; 
-
-
-        //删除单行注释
-        if ( resourceProject[i] == '/' && resourceProject[i + 1] == '/') &#123;
-            while( resourceProject[i] != '\n' ) &#123;
-                i++;
-            &#125;
-        &#125;
-
-        //删除多行注释
-        if ( resourceProject[i] == '/' && resourceProject[i + 1] == '*') &#123;
-            i = i + 2;
-            while( resourceProject[i] != '*' && resourceProject[i + 1] != '/') &#123;
-                i++;
-                if( i == end ) &#123;
-                    break;
-                &#125;
-            &#125;
-            i = i + 2;
-        &#125;
-
-        //删除换行符 制表符
-        if ( resourceProject[i] != '\n' && resourceProject[i] != '\t') &#123;
-            temp[count] = resourceProject[i];
-            count++;
-        &#125;
-    &#125;
-    temp[count] ='$';//末位增加结束符 
-    strcpy( resourceProject , temp );
-    return count;
-&#125;
-
-/*****查找保留字 1~32*****/
-int searchReserve(char reserveWord[][10], char s[]) &#123;
-    int i;
-    for ( i = 0; i < 32; i++ ) &#123;
-        if (strcmp(reserveWord[i], s) == 0) &#123;
-            i++;
-            return i;
-        &#125;
-    &#125;
-    return -1;
-
-&#125;
-
-/*****判断是否为数字*****/
-int IsDigit(char digit) &#123;
-    if (digit >= '0'&&digit <= '9') &#123;
-        return 1;
-    &#125;else &#123;
-        return 0;
-    &#125;
-&#125;
-
-/*****判断是否为字母*****/
-int IsLetter(char letter) &#123;
-    if ( (letter >= 'a'&&letter <= 'z') || (letter >= 'A'&&letter <= 'Z') || letter=='_') &#123;
-        return 1;
-    &#125;else &#123;
-       return 0;
-    &#125;
-&#125;
-
-int Scaning(char resourceProject[] , char token[]) &#123;
-    int i, count = 0;
-    char ch;
-    ch = resourceProject[pProject];
-
-    //过滤空格
-    while (ch ==' ') &#123;
-        pProject++;
-        ch = resourceProject[pProject];
-    &#125;
-
-    //每次收集前先清零
-    for (i = 0; i<20; i++) &#123;
-        token[i] = '\0';
-
-    &#125;
-
-    /*****判断运算符 33~54*****/
-    //加+ 减- 乘* 除/ 求余% 小于< 大于> 赋值= 非! 位与& 位或| 位异或^ 33~44
-    if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || 
-        ch == '<' || ch == '>' || ch == '=' || ch == '!' || ch == '&' ||
-        ch == '|' || ch == '^') &#123;
-        token[0] = resourceProject[pProject];
-        token[1] = '\0';
-        for (i = 0; i<22; i++) &#123;
-                if (strcmp(token, operatorWord[i]) == 0) &#123;
-                    t = 33 + i;
-                    break;
-                &#125;
-            &#125;
-        pProject++;
-        return t;
-    &#125;else if (resourceProject[pProject] == '+') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '+') &#123;         //自增++ 45
-            t = 45;
-        &#125;
-        pProject++;
-        return t;
-    &#125;else if (resourceProject[pProject] == '-') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '-') &#123;         //自减-- 46
-            t = 46;
-        &#125;
-        pProject++;
-        return t;
-    &#125;else if (resourceProject[pProject] == '<') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '=') &#123;         //小于等于<= 47
-            t = 47;
-        &#125;else if (resourceProject[pProject] == '<') &#123;   //左移<< 48
-            pProject--;
-            t = 48;
-        &#125;
-        pProject++;
-        return t;
-    &#125;else  if (resourceProject[pProject] == '>') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '=') &#123;         //大于等于>= 49
-            t = 49;
-        &#125;else if (resourceProject[pProject] == '>') &#123;   //右移>> 50
-            t = 50;
-        &#125;
-        pProject++;
-        return t;
-    &#125;else  if (resourceProject[pProject] == '=') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '=') &#123;         //等于== 51
-            t = 51;
-        &#125;
-        pProject++;
-        return t;
-    &#125;else  if (resourceProject[pProject] == '!') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '=') &#123;         //不等于!= 52
-            t = 52;
-        &#125;
-        pProject++;
-        return t;
-    &#125;else  if (resourceProject[pProject] == '&') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '&') &#123;         //逻辑与&& 53
-            t = 53;
-        &#125;
-        pProject++;
-        return t;
-    &#125; else  if (resourceProject[pProject] == '|') &#123;
-        pProject++;
-        if (resourceProject[pProject] == '|') &#123;         //逻辑或|| 54
-            t = 54;
-        &#125;
-        pProject++;
-        return t;
-    &#125;
-
-    /*****判断分隔符 55~70*****/
-    else if (ch == '(' || ch == ')' || ch == '[' || ch == ']' || ch == '&#123;' || 
-        ch == '&#125;' || ch == ';' || ch == ',' || ch == '\"' || ch == '\'' ||
-        ch == '#' || ch == '~' || ch == '\\' || ch == '.' || ch == '\?' ||
-        ch == ':') &#123;
-        token[0] = resourceProject[pProject];
-        token[1] = '\0';
-        for (i = 0; i<16; i++) &#123;
-                if (strcmp(token, boredrWord[i]) == 0) &#123;
-                    t = 55 + i;
-                    break;
-                &#125;
-            &#125;
-        pProject++;
-        return t;
-    &#125;
-
-    /*****判断字母*****/
-    else if (IsLetter(resourceProject[pProject])) &#123;
-            token[count] = resourceProject[pProject];
-            count++;
-            pProject++;
-            while (IsLetter(resourceProject[pProject]) || IsDigit(resourceProject[pProject])) &#123;
-                token[count++] = resourceProject[pProject];
-                pProject++;
-            &#125;
-
-            token[count] = '\0';
-            t =  searchReserve(reserveWord, token);
-            if (t == -1) &#123;
-                t = 100;
-            &#125;
-        return t;
-    &#125;
-
-    /*****判断常数*****/
-    else if (IsDigit(resourceProject[pProject])) &#123;
-        while (IsDigit(resourceProject[pProject])||(resourceProject[pProject]=='.'&&IsDigit(resourceProject[pProject+1]))) &#123;
-            token[count] = resourceProject[pProject];
-            count++;
-            pProject++;
-            t = 99;
-        &#125;
-        token[count] = '\0';
-        return t;
-    &#125;
-
-    /*****判断结束符*****/
-    else  if (resourceProject[pProject] == '$') &#123;     
-        t = 0;
-        return t;
-    &#125;
-
-    /*****判断错误*****/
-    else &#123;
-        printf("错误:非法字符%c！\n",ch);
-        pProject ++;
-        return -1;
-    &#125;
-
-
-&#125;
-
-int main() &#123;
-    //读取源程序
-    char resourceProject[10000];
-    char token[20] = &#123;0&#125;;
-    int i;
-    int end = 0;
-    FILE *fp;
-    if ( ( fp = fopen ( "data.txt","r") ) == NULL ) &#123;
-        printf("未找到源程序文档！");
-        return 0;
-    &#125;
-
-    //将源程序读入resourceProject数组
-    resourceProject[ pProject ] = fgetc(fp);
-    while(resourceProject[ pProject ] != EOF ) &#123;
-        pProject++;
-        resourceProject[ pProject ] = fgetc(fp);
-    &#125;
-    fclose(fp);
-    end = filtrationResource( resourceProject , pProject );
-    pProject = 0;
-
-    while (t != 0) &#123;
-        //扫描
-        t = Scaning(resourceProject, token);
-        if (t == 100) &#123;
-            for (i = 0; i<1000; i++) &#123;
-                if (strcmp(identifier[i], token) == 0) &#123;
-                    break;
-                &#125;
-                if (strcmp(identifier[i], "") == 0) &#123;
-                    strcpy(identifier[i], token);
-                    break;
-                &#125;
-            &#125;
-            printf("<%s,%d,标识符>\n", token,t);
-        &#125;else if (t == 99) &#123;
-            printf("<%s,%d,常数>\n", token,t);
-        &#125;else if (t >= 1 && t <= 32) &#123;
-            printf("<%s,%d,保留字>\n", reserveWord[t - 1],t);
-        &#125;else if (t >= 33 && t <= 54) &#123;
-            printf("<%s,%d,运算符>\n", operatorWord[t - 33],t);
-        &#125;else if (t >= 55 && t <= 70) &#123;
-            printf("<%s,%d,分隔符>\n", boredrWord[t - 55],t);
-        &#125;
-
-    &#125;
-    printf("扫描结束！");
-    return 0;
-&#125;</code></pre>
-<p>测试用例data.txt</p>
-<pre class=" language-c++"><code class="language-c++">if (a>b) &#123;a=_b@666+5.@5.5@555;&#125;
-//sisfsoij
-/*kcdjn*/
-else&#123;a=b;&#125;</code></pre>
-<p>实验结果</p>
-<p><img src="https://i.loli.net/2021/05/27/bvfjk7KhM3E4GpC.png" alt="实验结果.png"></p>
+<h5 id="词法分析结果"><a href="#词法分析结果" class="headerlink" title="词法分析结果"></a>词法分析结果</h5><p><img src="https://i.loli.net/2021/05/27/E6vaLlXWJwZ9xoF.png" alt="词法分析结果"></p>
 
     </article>
     <!-- license  -->
@@ -856,7 +533,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        
+        <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#LexicalAnalyzer-cpp"><span class="toc-number">1.</span> <span class="toc-text">LexicalAnalyzer.cpp</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%BA%90%E7%A8%8B%E5%BA%8F%E6%96%87%E6%A1%A3-data-txt"><span class="toc-number">2.</span> <span class="toc-text">源程序文档 data.txt</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C"><span class="toc-number">3.</span> <span class="toc-text">词法分析结果</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -1039,6 +716,8 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
     
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+    
         <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
     
         <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
@@ -1047,17 +726,15 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
     
-        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
-    
-        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
-    
         <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
     
-        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
     
         <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
     
         <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
     
         <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
     

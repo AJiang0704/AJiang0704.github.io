@@ -20,12 +20,12 @@
     <meta name="keywords" content="AJiang's Blog,AJiang">
     
     <meta name="description" content="">
-    <meta name="description" content="初识Slice 切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。  arr :&#x3D; [...]int&amp;#123;0,1,2,3,4,5,6,7&amp;#125; s :&#x3D; arr[2:6]              &#x2F;&#x2F;s的值为[2,3,4,5] s :&#x3D; arr[:6]               &#x2F;">
+    <meta name="description" content="初识Slice 切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。  arr :&#x3D; [...]int&amp;#123;0,1,2,3,4,5,6,7&amp;#125;s :&#x3D; arr[2:6]	 	 	&#x2F;&#x2F;s的值为[2,3,4,5]s :&#x3D; arr[:6]	 	  	&#x2F;&#x2F;s的值为[0,1,2,3,4,5]s">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go语言的Slice">
 <meta property="og:url" content="https://ajiang0704.gitee.io/2019/09/30/1-Slice/index.html">
 <meta property="og:site_name" content="AJiang&#39;s Blog">
-<meta property="og:description" content="初识Slice 切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。  arr :&#x3D; [...]int&amp;#123;0,1,2,3,4,5,6,7&amp;#125; s :&#x3D; arr[2:6]              &#x2F;&#x2F;s的值为[2,3,4,5] s :&#x3D; arr[:6]               &#x2F;">
+<meta property="og:description" content="初识Slice 切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。  arr :&#x3D; [...]int&amp;#123;0,1,2,3,4,5,6,7&amp;#125;s :&#x3D; arr[2:6]	 	 	&#x2F;&#x2F;s的值为[2,3,4,5]s :&#x3D; arr[:6]	 	  	&#x2F;&#x2F;s的值为[0,1,2,3,4,5]s">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-09-29T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-05-26T19:46:38.944Z">
@@ -213,7 +213,7 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism-dracula.css" type="text/css"></head>
 
     
         <body class="post-body">
@@ -408,47 +408,37 @@ height:50vh;
         <h1 id="初识Slice"><a href="#初识Slice" class="headerlink" title="初识Slice"></a>初识Slice</h1><blockquote>
 <p>切片(Slice)是围绕动态数组的概念设计的，它的长度并不固定，可以追加元素并会在切片容量不足时进行扩容。使用这种结构，可以更方便地管理和使用数据集合。</p>
 </blockquote>
-<pre class=" language-golang"><code class="language-golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
-s := arr[2:6]              //s的值为[2,3,4,5]
-s := arr[:6]               //s的值为[0,1,2,3,4,5]
-s := arr[2:]               //s的值为[2,3,4,5,6,7]
-s := arr[:]                //s的值为[0,1,2,3,4,5,6,7]</code></pre>
-<pre class=" language-golang"><code class="language-golang">func updateSlice(s []int)&#123;
-    s[0] = 100             //arr原始数据也会改变
-&#125;</code></pre>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">arr := [...]<span class="keyword">int</span>&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>&#125;</span><br><span class="line">s := arr[<span class="number">2</span>:<span class="number">6</span>]	 	 	<span class="comment">//s的值为[2,3,4,5]</span></span><br><span class="line">s := arr[:<span class="number">6</span>]	 	  	<span class="comment">//s的值为[0,1,2,3,4,5]</span></span><br><span class="line">s := arr[<span class="number">2</span>:]	 	  	<span class="comment">//s的值为[2,3,4,5,6,7]</span></span><br><span class="line">s := arr[:]		    	<span class="comment">//s的值为[0,1,2,3,4,5,6,7]</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">updateSlice</span><span class="params">(s []<span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">    s[<span class="number">0</span>] = <span class="number">100</span>			 <span class="comment">//arr原始数据也会改变</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>Slice本身没有数据，是对底层<code>array</code>的一个<code>view</code></li>
 </ul>
-<h1 id="Slice的扩展"><a href="#Slice的扩展" class="headerlink" title="Slice的扩展"></a>Slice的扩展</h1><pre class=" language-golang"><code class="language-golang">arr := [...]int&#123;0,1,2,3,4,5,6,7&#125;
-s1 := arr[2:6]             //s1的值为[2,3,4,5]
-s2 := s1[3:5]              //s2的值为[5,6]</code></pre>
+<h1 id="Slice的扩展"><a href="#Slice的扩展" class="headerlink" title="Slice的扩展"></a>Slice的扩展</h1><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">arr := [...]<span class="keyword">int</span>&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>&#125;</span><br><span class="line">s1 := arr[<span class="number">2</span>:<span class="number">6</span>]			 <span class="comment">//s1的值为[2,3,4,5]</span></span><br><span class="line">s2 := s1[<span class="number">3</span>:<span class="number">5</span>]		 	 <span class="comment">//s2的值为[5,6]</span></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>Slice可以向后扩展，但不可以向前扩展</li>
 </ul>
-<h1 id="向Slice添加元素"><a href="#向Slice添加元素" class="headerlink" title="向Slice添加元素"></a>向Slice添加元素</h1><pre class=" language-golang"><code class="language-golang">s2 := append(s1,10)</code></pre>
+<h1 id="向Slice添加元素"><a href="#向Slice添加元素" class="headerlink" title="向Slice添加元素"></a>向Slice添加元素</h1><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">s2 := <span class="built_in">append</span>(s1,<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
 <ul>
 <li>添加元素时如果超越<code>cap</code>，系统会重新分配更大的底层数组（如果原来的数组不用了，会被垃圾回收掉）</li>
 </ul>
-<h1 id="创建Slice"><a href="#创建Slice" class="headerlink" title="创建Slice"></a>创建Slice</h1><pre class=" language-golang"><code class="language-golang">//Creating slice
-var s []int
-for i :=0 ; i < 100 ; i++&#123;
-    s = append(s, 2 * i + 1)
-&#125;</code></pre>
-<pre class=" language-golang"><code class="language-golang">s := []int&#123;2,4,6,8&#125;</code></pre>
-<pre class=" language-golang"><code class="language-golang">s := make([]int,16)</code></pre>
-<pre class=" language-golang"><code class="language-golang">s := make([]int,10,32)     //len = 10，cap = 32</code></pre>
-<h1 id="拷贝Slice"><a href="#拷贝Slice" class="headerlink" title="拷贝Slice"></a>拷贝Slice</h1><pre class=" language-golang"><code class="language-golang">//Copying slice
-copy(s2,s1)
-printSlice(s2)</code></pre>
-<h1 id="从Slice删除元素"><a href="#从Slice删除元素" class="headerlink" title="从Slice删除元素"></a>从Slice删除元素</h1><pre class=" language-golang"><code class="language-golang">//Deleting elements from slice
-s = append(s[:3],s[4:]...) //删掉第4个元素，len减1，cap不变</code></pre>
-<pre class=" language-golang"><code class="language-golang">//Popping from front
-//front := s[0]
-s = s[1:]</code></pre>
-<pre class=" language-golang"><code class="language-golang">//Popping from back
-//tail := s[len(s)-1]
-s = append(:len(s)-1) </code></pre>
+<h1 id="创建Slice"><a href="#创建Slice" class="headerlink" title="创建Slice"></a>创建Slice</h1><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Creating slice</span></span><br><span class="line"><span class="keyword">var</span> s []<span class="keyword">int</span></span><br><span class="line"><span class="keyword">for</span> i :=<span class="number">0</span> ; i &lt; <span class="number">100</span> ; i++&#123;</span><br><span class="line">    s = <span class="built_in">append</span>(s, <span class="number">2</span> * i + <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">s := []<span class="keyword">int</span>&#123;<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">8</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">s := <span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">16</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">s := <span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">10</span>,<span class="number">32</span>)	 <span class="comment">//len = 10，cap = 32</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="拷贝Slice"><a href="#拷贝Slice" class="headerlink" title="拷贝Slice"></a>拷贝Slice</h1><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Copying slice</span></span><br><span class="line"><span class="built_in">copy</span>(s2,s1)</span><br><span class="line">printSlice(s2)</span><br></pre></td></tr></table></figure>
+
+<h1 id="从Slice删除元素"><a href="#从Slice删除元素" class="headerlink" title="从Slice删除元素"></a>从Slice删除元素</h1><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Deleting elements from slice</span></span><br><span class="line">s = <span class="built_in">append</span>(s[:<span class="number">3</span>],s[<span class="number">4</span>:]...) <span class="comment">//删掉第4个元素，len减1，cap不变</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Popping from front</span></span><br><span class="line"><span class="comment">//front := s[0]</span></span><br><span class="line">s = s[<span class="number">1</span>:]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Popping from back</span></span><br><span class="line"><span class="comment">//tail := s[len(s)-1]</span></span><br><span class="line">s = <span class="built_in">append</span>(:<span class="built_in">len</span>(s)<span class="number">-1</span>) </span><br></pre></td></tr></table></figure>
     </article>
     <!-- license  -->
     
@@ -747,6 +737,8 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
     
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+    
         <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
     
         <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
@@ -755,17 +747,15 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
     
-        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
-    
-        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
-    
         <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
     
-        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
     
         <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
     
         <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
     
         <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
     

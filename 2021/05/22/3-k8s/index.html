@@ -35,10 +35,10 @@
 <meta property="article:published_time" content="2021-05-21T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-05-26T18:51:58.887Z">
 <meta property="article:author" content="AJiang">
+<meta property="article:tag" content="k8s">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="Ubuntu">
-<meta property="article:tag" content="k8s">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2021/05/22/QHUi7TgWYMdfwr2.jpg">
     <meta http-equiv="Cache-control" content="no-cache">
@@ -222,7 +222,7 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+<meta name="generator" content="Hexo 5.1.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism-dracula.css" type="text/css"></head>
 
     
         <body class="post-body">
@@ -288,13 +288,13 @@ height:50vh;
                 
                     <div class= post-intro-tags >
     
+        <a class="post-tag" href="javascript:void(0);" data-tags = "k8s">k8s</a>
+    
         <a class="post-tag" href="javascript:void(0);" data-tags = "Docker">Docker</a>
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "Linux">Linux</a>
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "Ubuntu">Ubuntu</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "k8s">k8s</a>
     
 </div>
                 
@@ -472,93 +472,37 @@ height:50vh;
 <li><strong>K8s</strong>：v1.21.1</li>
 </ul>
 <p><img src="https://i.loli.net/2021/05/22/1hJcrpw7ubfUdSR.jpg" alt="K8s"></p>
-<h2 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h2><h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><pre class=" language-powershell"><code class="language-powershell"><span class="token comment" spellcheck="true">#更新一下apt包索引</span>
-sudo apt<span class="token operator">-</span>get update
-<span class="token comment" spellcheck="true">#使apt可以通过HTTPS使用存储库</span>
-sudo apt<span class="token operator">-</span>get install <span class="token operator">-</span>y apt<span class="token operator">-</span>transport<span class="token operator">-</span>https ca<span class="token operator">-</span>certificates curl software<span class="token operator">-</span>properties<span class="token operator">-</span>common
-<span class="token comment" spellcheck="true">#添加Docker官方的GPG密钥</span>
-curl <span class="token operator">-</span>fsSL https:<span class="token operator">/</span><span class="token operator">/</span>download<span class="token punctuation">.</span>docker<span class="token punctuation">.</span>com<span class="token operator">/</span>linux<span class="token operator">/</span>ubuntu<span class="token operator">/</span>gpg <span class="token punctuation">|</span> sudo apt<span class="token operator">-</span>key add <span class="token operator">-</span>
-<span class="token comment" spellcheck="true">#设置stable存储库</span>
-sudo add<span class="token operator">-</span>apt<span class="token operator">-</span>repository <span class="token string">"deb [arch=amd64] https://download.docker.com/linux/ubuntu<span class="token function"> $<span class="token punctuation">(</span>lsb_release <span class="token operator">-</span>cs<span class="token punctuation">)</span></span> stable"</span>
-<span class="token comment" spellcheck="true">#再更新一下apt包索引</span>
-sudo apt<span class="token operator">-</span>get update
-<span class="token comment" spellcheck="true">#安装最新版本的Docker CE</span>
-sudo apt<span class="token operator">-</span>get install <span class="token operator">-</span>y docker<span class="token operator">-</span>ce
-<span class="token comment" spellcheck="true">#验证docker</span>
-sudo docker run hello<span class="token operator">-</span>world</code></pre>
-<h3 id="安装kubelet-kubeadm-kubectl（阿里源）"><a href="#安装kubelet-kubeadm-kubectl（阿里源）" class="headerlink" title="安装kubelet kubeadm kubectl（阿里源）"></a>安装kubelet kubeadm kubectl（阿里源）</h3><pre class=" language-powershell"><code class="language-powershell"><span class="token comment" spellcheck="true"># 安装依赖</span>
-sudo apt<span class="token operator">-</span>get update &amp;&amp; apt<span class="token operator">-</span>get install <span class="token operator">-</span>y apt<span class="token operator">-</span>transport<span class="token operator">-</span>https
-<span class="token comment" spellcheck="true"># 加载key</span>
-sudo curl https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>aliyun<span class="token punctuation">.</span>com<span class="token operator">/</span>kubernetes<span class="token operator">/</span>apt<span class="token operator">/</span>doc<span class="token operator">/</span>apt<span class="token operator">-</span>key<span class="token punctuation">.</span>gpg <span class="token punctuation">|</span> apt<span class="token operator">-</span>key add <span class="token operator">-</span> 
-<span class="token comment" spellcheck="true"># 添加源</span>
-sudo <span class="token function">cat</span> &lt;&lt;EOF ><span class="token operator">/</span>etc<span class="token operator">/</span>apt<span class="token operator">/</span>sources<span class="token punctuation">.</span>list<span class="token punctuation">.</span>d<span class="token operator">/</span>kubernetes<span class="token punctuation">.</span>list
-deb https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>aliyun<span class="token punctuation">.</span>com<span class="token operator">/</span>kubernetes<span class="token operator">/</span>apt<span class="token operator">/</span> kubernetes<span class="token operator">-</span>xenial main
-EOF
-<span class="token comment" spellcheck="true"># 安装</span>
-sudo apt<span class="token operator">-</span>get update
-sudo apt<span class="token operator">-</span>get install <span class="token operator">-</span>y kubelet kubeadm kubectl</code></pre>
-<h3 id="关闭swap"><a href="#关闭swap" class="headerlink" title="关闭swap"></a>关闭swap</h3><pre class=" language-powershell"><code class="language-powershell"><span class="token comment" spellcheck="true">#临时关闭swap（立即生效）</span>
-sudo swapoff <span class="token operator">-</span>a
-<span class="token comment" spellcheck="true">#永久关闭swap</span>
-vim <span class="token operator">/</span>etc<span class="token operator">/</span>fstab
-<span class="token comment" spellcheck="true">#打开fstab文件，注释掉有swap的那一行，然后保存</span></code></pre>
-<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><pre class=" language-powershell"><code class="language-powershell">systemctl stop firewalld &amp; systemctl disable firewalld</code></pre>
-<h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><pre class=" language-powershell"><code class="language-powershell">sed <span class="token operator">-</span>i <span class="token string">"s/^SELINUX=/SELINUX=disabled/"</span> <span class="token operator">/</span>etc<span class="token operator">/</span>selinux<span class="token operator">/</span>config
-setenforce 0 </code></pre>
-<h3 id="修改cgroupfs"><a href="#修改cgroupfs" class="headerlink" title="修改cgroupfs"></a>修改cgroupfs</h3><pre class=" language-powershell"><code class="language-powershell">sudo vim <span class="token operator">/</span>etc<span class="token operator">/</span>systemd<span class="token operator">/</span>system<span class="token operator">/</span>kubelet<span class="token punctuation">.</span>service<span class="token punctuation">.</span>d<span class="token operator">/</span>10<span class="token operator">-</span>kubeadm<span class="token punctuation">.</span>conf
-<span class="token comment" spellcheck="true">#增加--cgroup-driver=cgroupfs</span>
+<h2 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h2><h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#更新一下apt包索引</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update</span><br><span class="line"><span class="comment">#使apt可以通过HTTPS使用存储库</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install <span class="literal">-y</span> apt<span class="literal">-transport</span><span class="literal">-https</span> ca<span class="literal">-certificates</span> <span class="built_in">curl</span> software<span class="literal">-properties</span><span class="literal">-common</span></span><br><span class="line"><span class="comment">#添加Docker官方的GPG密钥</span></span><br><span class="line"><span class="built_in">curl</span> <span class="literal">-fsSL</span> https://download.docker.com/linux/ubuntu/gpg | sudo apt<span class="literal">-key</span> add -</span><br><span class="line"><span class="comment">#设置stable存储库</span></span><br><span class="line">sudo <span class="built_in">add-apt</span><span class="literal">-repository</span> <span class="string">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu <span class="variable">$</span>(lsb_release -cs) stable&quot;</span></span><br><span class="line"><span class="comment">#再更新一下apt包索引</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update</span><br><span class="line"><span class="comment">#安装最新版本的Docker CE</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install <span class="literal">-y</span> docker<span class="literal">-ce</span></span><br><span class="line"><span class="comment">#验证docker</span></span><br><span class="line">sudo docker run hello<span class="literal">-world</span></span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">#重启kubelet</span>
-sudo systemctl daemon<span class="token operator">-</span>reload
-sudo systemctl restart kubelet </code></pre>
-<h3 id="查看Master需要安装的镜像列表"><a href="#查看Master需要安装的镜像列表" class="headerlink" title="查看Master需要安装的镜像列表"></a>查看Master需要安装的镜像列表</h3><pre class=" language-powershell"><code class="language-powershell">kubeadm config images list</code></pre>
+<h3 id="安装kubelet-kubeadm-kubectl（阿里源）"><a href="#安装kubelet-kubeadm-kubectl（阿里源）" class="headerlink" title="安装kubelet kubeadm kubectl（阿里源）"></a>安装kubelet kubeadm kubectl（阿里源）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update &amp;&amp; apt<span class="literal">-get</span> install <span class="literal">-y</span> apt<span class="literal">-transport</span><span class="literal">-https</span></span><br><span class="line"><span class="comment"># 加载key</span></span><br><span class="line">sudo <span class="built_in">curl</span> https://mirrors.aliyun.com/kubernetes/apt/doc/apt<span class="literal">-key</span>.gpg | apt<span class="literal">-key</span> add - </span><br><span class="line"><span class="comment"># 添加源</span></span><br><span class="line">sudo <span class="built_in">cat</span> &lt;&lt;EOF &gt;/etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes<span class="literal">-xenial</span> main</span><br><span class="line">EOF</span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update</span><br><span class="line">sudo apt<span class="literal">-get</span> install <span class="literal">-y</span> kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭swap"><a href="#关闭swap" class="headerlink" title="关闭swap"></a>关闭swap</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#临时关闭swap（立即生效）</span></span><br><span class="line">sudo swapoff <span class="literal">-a</span></span><br><span class="line"><span class="comment">#永久关闭swap</span></span><br><span class="line">vim /etc/fstab</span><br><span class="line"><span class="comment">#打开fstab文件，注释掉有swap的那一行，然后保存</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">systemctl stop firewalld &amp; systemctl disable firewalld</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sed <span class="literal">-i</span> <span class="string">&quot;s/^SELINUX=/SELINUX=disabled/&quot;</span> /etc/selinux/config</span><br><span class="line">setenforce <span class="number">0</span> </span><br></pre></td></tr></table></figure>
+
+<h3 id="修改cgroupfs"><a href="#修改cgroupfs" class="headerlink" title="修改cgroupfs"></a>修改cgroupfs</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/systemd/system/kubelet.service.d/<span class="number">10</span><span class="literal">-kubeadm</span>.conf</span><br><span class="line"><span class="comment">#增加--cgroup-driver=cgroupfs</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#重启kubelet</span></span><br><span class="line">sudo systemctl daemon<span class="literal">-reload</span></span><br><span class="line">sudo systemctl restart kubelet </span><br></pre></td></tr></table></figure>
+
+<h3 id="查看Master需要安装的镜像列表"><a href="#查看Master需要安装的镜像列表" class="headerlink" title="查看Master需要安装的镜像列表"></a>查看Master需要安装的镜像列表</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubeadm config images list</span><br></pre></td></tr></table></figure>
 <p><img src="https://i.loli.net/2021/05/22/VUfI1DBMujb9vPp.jpg" alt="list"></p>
-<h3 id="下拉镜像脚本"><a href="#下拉镜像脚本" class="headerlink" title="下拉镜像脚本"></a>下拉镜像脚本</h3><pre class=" language-shell"><code class="language-shell">images=(
-    kube-apiserver:v1.21.1
-    kube-controller-manager:v1.21.1
-    kube-scheduler:v1.21.1
-    kube-proxy:v1.21.1
-    pause:3.4.1
-    etcd:3.4.13-0
-    coredns/coredns:v1.8.0
-)
-for imageName in $&#123;images[@]&#125;;
-do
-    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;
-    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125; k8s.gcr.io/$&#123;imageName&#125;
-    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;
-done</code></pre>
-<h3 id="安装flannel（node上也要安装）"><a href="#安装flannel（node上也要安装）" class="headerlink" title="安装flannel（node上也要安装）"></a>安装flannel（node上也要安装）</h3><pre class=" language-powershell"><code class="language-powershell">wget https:<span class="token operator">/</span><span class="token operator">/</span>raw<span class="token punctuation">.</span>githubusercontent<span class="token punctuation">.</span>com<span class="token operator">/</span>coreos<span class="token operator">/</span>flannel<span class="token operator">/</span>master<span class="token operator">/</span>Documentation<span class="token operator">/</span>kube<span class="token operator">-</span>flannel<span class="token punctuation">.</span>yml
-<span class="token comment" spellcheck="true"># 修改docker镜像地址</span>
-sed <span class="token string">'s/quay.io\/coreos/registry.cn-hangzhou.aliyuncs.com\/imcto/g'</span>
-<span class="token comment" spellcheck="true"># 安装flannel</span>
-sudo kubectl apply <span class="token operator">-</span>f kube<span class="token operator">-</span>flannel<span class="token punctuation">.</span>yml</code></pre>
-<h3 id="初始化k8s集群"><a href="#初始化k8s集群" class="headerlink" title="初始化k8s集群"></a>初始化k8s集群</h3><pre class=" language-powershell"><code class="language-powershell">kubeadm init</code></pre>
+<h3 id="下拉镜像脚本"><a href="#下拉镜像脚本" class="headerlink" title="下拉镜像脚本"></a>下拉镜像脚本</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">images=(</span><br><span class="line">	kube-apiserver:v1.21.1</span><br><span class="line">	kube-controller-manager:v1.21.1</span><br><span class="line">	kube-scheduler:v1.21.1</span><br><span class="line">	kube-proxy:v1.21.1</span><br><span class="line">	pause:3.4.1</span><br><span class="line">	etcd:3.4.13-0</span><br><span class="line">	coredns/coredns:v1.8.0</span><br><span class="line">)</span><br><span class="line">for imageName in $&#123;images[@]&#125;;</span><br><span class="line">do</span><br><span class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125; k8s.gcr.io/$&#123;imageName&#125;</span><br><span class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装flannel（node上也要安装）"><a href="#安装flannel（node上也要安装）" class="headerlink" title="安装flannel（node上也要安装）"></a>安装flannel（node上也要安装）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">wget</span> https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube<span class="literal">-flannel</span>.yml</span><br><span class="line"><span class="comment"># 修改docker镜像地址</span></span><br><span class="line">sed <span class="string">&#x27;s/quay.io\/coreos/registry.cn-hangzhou.aliyuncs.com\/imcto/g&#x27;</span></span><br><span class="line"><span class="comment"># 安装flannel</span></span><br><span class="line">sudo kubectl apply <span class="operator">-f</span> kube<span class="literal">-flannel</span>.yml</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化k8s集群"><a href="#初始化k8s集群" class="headerlink" title="初始化k8s集群"></a>初始化k8s集群</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubeadm init</span><br></pre></td></tr></table></figure>
 <img src="https://i.loli.net/2021/05/22/gfASlvtdiJzbmrT.jpg" alt="init" style="zoom:80%;" />
 
-<pre class=" language-powershell"><code class="language-powershell"><span class="token comment" spellcheck="true">#根据提示输入命令</span>
-mkdir <span class="token operator">-</span>p <span class="token variable">$HOME</span><span class="token operator">/</span><span class="token punctuation">.</span>kube
-sudo <span class="token function">cp</span> <span class="token operator">-</span>i <span class="token operator">/</span>etc<span class="token operator">/</span>kubernetes<span class="token operator">/</span>admin<span class="token punctuation">.</span>conf <span class="token variable">$HOME</span><span class="token operator">/</span><span class="token punctuation">.</span>kube<span class="token operator">/</span>config
-sudo chown $<span class="token punctuation">(</span>id <span class="token operator">-</span>u<span class="token punctuation">)</span>:$<span class="token punctuation">(</span>id <span class="token operator">-</span>g<span class="token punctuation">)</span> <span class="token variable">$HOME</span><span class="token operator">/</span><span class="token punctuation">.</span>kube<span class="token operator">/</span>config
-<span class="token comment" spellcheck="true">#将提示给的最后一行jion命令（token）记下来，然后在node节点执行</span>
-kubeadm join 121<span class="token punctuation">.</span>41<span class="token punctuation">.</span>164<span class="token punctuation">.</span>172:6443 <span class="token operator">--</span>token abcdef<span class="token punctuation">.</span>0123456789abcdef <span class="token operator">--</span>discovery<span class="token operator">-</span>token<span class="token operator">-</span>ca<span class="token operator">-</span>cert<span class="token operator">-</span>hash sha256:b73d642a2deb12fcf40adf1f1eec1fad72ff9d892be78cd6854c456f11e1eae2</code></pre>
-<h3 id="Node需要安装的镜像列表（和Master一致）"><a href="#Node需要安装的镜像列表（和Master一致）" class="headerlink" title="Node需要安装的镜像列表（和Master一致）"></a>Node需要安装的镜像列表（和Master一致）</h3><pre class=" language-powershell"><code class="language-powershell">kube<span class="token operator">-</span>proxy:v1<span class="token punctuation">.</span>21<span class="token punctuation">.</span>1
-pause:3<span class="token punctuation">.</span>4<span class="token punctuation">.</span>1</code></pre>
-<h3 id="下拉镜像脚本-1"><a href="#下拉镜像脚本-1" class="headerlink" title="下拉镜像脚本"></a>下拉镜像脚本</h3><pre class=" language-shell"><code class="language-shell">images=(
-    kube-proxy:v1.21.1
-    pause:3.4.1
-)
-for imageName in $&#123;images[@]&#125;;
-do
-    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;
-    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125; k8s.gcr.io/$&#123;imageName&#125;
-    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;
-done</code></pre>
-<h3 id="执行node节点加入集群命令"><a href="#执行node节点加入集群命令" class="headerlink" title="执行node节点加入集群命令"></a>执行node节点加入集群命令</h3><pre class=" language-powershell"><code class="language-powershell"><span class="token comment" spellcheck="true">#重置node节点</span>
-kubeadm reset
-<span class="token comment" spellcheck="true">#执行之前记下来的join命令</span>
-kubeadm join 121<span class="token punctuation">.</span>41<span class="token punctuation">.</span>164<span class="token punctuation">.</span>172:6443 <span class="token operator">--</span>token abcdef<span class="token punctuation">.</span>0123456789abcdef <span class="token operator">--</span>discovery<span class="token operator">-</span>token<span class="token operator">-</span>ca<span class="token operator">-</span>cert<span class="token operator">-</span>hash sha256:b73d642a2deb12fcf40adf1f1eec1fad72ff9d892be78cd6854c456f11e1eae2</code></pre>
-<h2 id="集群测试"><a href="#集群测试" class="headerlink" title="集群测试"></a>集群测试</h2><h3 id="查看节点状态"><a href="#查看节点状态" class="headerlink" title="查看节点状态"></a>查看节点状态</h3><pre class=" language-powershell"><code class="language-powershell">kubectl get pods <span class="token operator">-</span>n kube<span class="token operator">-</span>system</code></pre>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#根据提示输入命令</span></span><br><span class="line">mkdir <span class="literal">-p</span> <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo <span class="built_in">cp</span> <span class="literal">-i</span> /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo chown <span class="variable">$</span>(id <span class="literal">-u</span>):<span class="variable">$</span>(id <span class="literal">-g</span>) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"><span class="comment">#将提示给的最后一行jion命令（token）记下来，然后在node节点执行</span></span><br><span class="line">kubeadm join <span class="number">121.41</span>.<span class="number">164.172</span>:<span class="number">6443</span> -<span class="literal">-token</span> abcdef.<span class="number">0123456789</span>abcdef -<span class="literal">-discovery</span><span class="literal">-token</span><span class="literal">-ca</span><span class="literal">-cert</span><span class="literal">-hash</span> sha256:b73d642a2deb12fcf40adf1f1eec1fad72ff9d892be78cd6854c456f11e1eae2</span><br></pre></td></tr></table></figure>
+
+<h3 id="Node需要安装的镜像列表（和Master一致）"><a href="#Node需要安装的镜像列表（和Master一致）" class="headerlink" title="Node需要安装的镜像列表（和Master一致）"></a>Node需要安装的镜像列表（和Master一致）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kube<span class="literal">-proxy</span>:v1.<span class="number">21.1</span></span><br><span class="line">pause:<span class="number">3.4</span>.<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="下拉镜像脚本-1"><a href="#下拉镜像脚本-1" class="headerlink" title="下拉镜像脚本"></a>下拉镜像脚本</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">images=(</span><br><span class="line">	kube-proxy:v1.21.1</span><br><span class="line">	pause:3.4.1</span><br><span class="line">)</span><br><span class="line">for imageName in $&#123;images[@]&#125;;</span><br><span class="line">do</span><br><span class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125; k8s.gcr.io/$&#123;imageName&#125;</span><br><span class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行node节点加入集群命令"><a href="#执行node节点加入集群命令" class="headerlink" title="执行node节点加入集群命令"></a>执行node节点加入集群命令</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#重置node节点</span></span><br><span class="line">kubeadm reset</span><br><span class="line"><span class="comment">#执行之前记下来的join命令</span></span><br><span class="line">kubeadm join <span class="number">121.41</span>.<span class="number">164.172</span>:<span class="number">6443</span> -<span class="literal">-token</span> abcdef.<span class="number">0123456789</span>abcdef -<span class="literal">-discovery</span><span class="literal">-token</span><span class="literal">-ca</span><span class="literal">-cert</span><span class="literal">-hash</span> sha256:b73d642a2deb12fcf40adf1f1eec1fad72ff9d892be78cd6854c456f11e1eae2</span><br></pre></td></tr></table></figure>
+
+<h2 id="集群测试"><a href="#集群测试" class="headerlink" title="集群测试"></a>集群测试</h2><h3 id="查看节点状态"><a href="#查看节点状态" class="headerlink" title="查看节点状态"></a>查看节点状态</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubectl get pods <span class="literal">-n</span> kube<span class="literal">-system</span></span><br></pre></td></tr></table></figure>
+
 <table>
 <thead>
 <tr>
@@ -584,25 +528,27 @@ kubeadm join 121<span class="token punctuation">.</span>41<span class="token pun
 <h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><ul>
 <li>mater的硬件分配至少2核2G内存。一开始我的服务器只有1G内存，报错信息如下，升级为2G内存后问题解决。</li>
 </ul>
-<pre class=" language-powershell"><code class="language-powershell">preflight<span class="token namespace">[ERROR Mem]</span>: the system RAM <span class="token punctuation">(</span>936 MB<span class="token punctuation">)</span> is less than the minimum 1700 MB</code></pre>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">preflight[<span class="type">ERROR</span> <span class="type">Mem</span>]: the system RAM (<span class="number">936</span> MB) is less than the minimum <span class="number">1700</span> MB</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>gpg: 找不到有效的 OpenPGP 数据</li>
 </ul>
-<pre class=" language-powershell"><code class="language-powershell">wget https:<span class="token operator">/</span><span class="token operator">/</span>download<span class="token punctuation">.</span>docker<span class="token punctuation">.</span>com<span class="token operator">/</span>linux<span class="token operator">/</span>ubuntu<span class="token operator">/</span>gpg
-sudo apt<span class="token operator">-</span>key add gpg</code></pre>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">wget</span> https://download.docker.com/linux/ubuntu/gpg</span><br><span class="line">sudo apt<span class="literal">-key</span> add gpg</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>执行sudo apt-get update出现W: GPG 错误：http: //ppa.launchpad.net precise Release: 由于没有公钥，无法验证下列签名： NO_PUBKEY 6AF0E1940624A220</li>
 </ul>
-<pre class=" language-powershell"><code class="language-powershell">sudo apt<span class="token operator">-</span>key adv <span class="token operator">--</span>keyserver keyserver<span class="token punctuation">.</span>ubuntu<span class="token punctuation">.</span>com <span class="token operator">--</span>recv<span class="token operator">-</span>keys 6AF0E1940624A220</code></pre>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo apt<span class="literal">-key</span> adv -<span class="literal">-keyserver</span> keyserver.ubuntu.com -<span class="literal">-recv</span><span class="literal">-keys</span> <span class="number">6</span>AF0E1940624A220</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>[ERROR KubeletVersion]：kubelet版本高于控制平面版本。Kubeadm，Kubectl和Kubelet的版本应该都一致。</li>
 </ul>
-<pre class=" language-powershell"><code class="language-powershell">sudo kubeadm init <span class="token operator">--</span>pod<span class="token operator">-</span>network<span class="token operator">-</span>cidr = 121<span class="token punctuation">.</span>41<span class="token punctuation">.</span>164<span class="token punctuation">.</span>172<span class="token operator">/</span>12 <span class="token operator">--</span>kubernetes<span class="token operator">-</span>version = v1<span class="token punctuation">.</span>21<span class="token punctuation">.</span>1<span class="token operator">-</span>rc<span class="token punctuation">.</span>1</code></pre>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo kubeadm init -<span class="literal">-pod</span><span class="literal">-network</span><span class="literal">-cidr</span> = <span class="number">121.41</span>.<span class="number">164.172</span>/<span class="number">12</span> -<span class="literal">-kubernetes</span><span class="literal">-version</span> = v1.<span class="number">21.1</span><span class="literal">-rc</span>.<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>8080端口没有开</li>
 </ul>
-<pre class=" language-powershell"><code class="language-powershell">unable to connect to the server:dial tcp <span class="token punctuation">[</span>::1<span class="token punctuation">]</span>:8080:connect: cannot assign ……</code></pre>
-
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">unable to connect to the server:dial tcp [::<span class="number">1</span>]:<span class="number">8080</span>:connect: cannot assign ……</span><br></pre></td></tr></table></figure>
     </article>
     <!-- license  -->
     
@@ -906,6 +852,8 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
     
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+    
         <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
     
         <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
@@ -914,17 +862,15 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
     
-        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
-    
-        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
-    
         <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
     
-        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
     
         <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
     
         <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
     
         <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
     
