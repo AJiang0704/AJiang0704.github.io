@@ -20,12 +20,12 @@
     <meta name="keywords" content="AJiang's Blog,AJiang">
     
     <meta name="description" content="">
-    <meta name="description" content="K8S简介 Kubernetes是一个开源的容器群集管理系统，简称K8S。它用于容器化应用程序的部署，管理及扩展。  特征 自动化 自动部署，自动重启，自动复制，自动扩容、自动更新、自动伸缩&#x2F;扩展、自动化管理资源  可移植 支持公有云，私有云，混合云，多重云  可扩展 模块化、插件化、可挂载、可组合   组件Master组件 kube-apiserver Kubernetes API，集群统一入口">
+    <meta name="description" content="K8S简介 Kubernetes 是一个开源的容器群集管理系统，简称 K8S 。它用于容器化应用程序的部署，管理及扩展。  特征 自动化 自动部署，自动重启，自动复制，自动扩容、自动更新、自动伸缩&#x2F;扩展、自动化管理资源  可移植 支持公有云，私有云，混合云，多重云  可扩展 模块化、插件化、可挂载、可组合   组件Master组件 kube-apiserver Kubernetes API ，集群">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从零开始部署k8s集群">
-<meta property="og:url" content="https://ajiang0704.gitee.io/2021/05/22/3-k8s/index.html">
+<meta property="og:url" content="https://ajiang0704.github.io/2021/05/22/3-k8s/index.html">
 <meta property="og:site_name" content="AJiang&#39;s Blog">
-<meta property="og:description" content="K8S简介 Kubernetes是一个开源的容器群集管理系统，简称K8S。它用于容器化应用程序的部署，管理及扩展。  特征 自动化 自动部署，自动重启，自动复制，自动扩容、自动更新、自动伸缩&#x2F;扩展、自动化管理资源  可移植 支持公有云，私有云，混合云，多重云  可扩展 模块化、插件化、可挂载、可组合   组件Master组件 kube-apiserver Kubernetes API，集群统一入口">
+<meta property="og:description" content="K8S简介 Kubernetes 是一个开源的容器群集管理系统，简称 K8S 。它用于容器化应用程序的部署，管理及扩展。  特征 自动化 自动部署，自动重启，自动复制，自动扩容、自动更新、自动伸缩&#x2F;扩展、自动化管理资源  可移植 支持公有云，私有云，混合云，多重云  可扩展 模块化、插件化、可挂载、可组合   组件Master组件 kube-apiserver Kubernetes API ，集群">
 <meta property="og:locale">
 <meta property="og:image" content="https://i.loli.net/2021/05/22/QHUi7TgWYMdfwr2.jpg">
 <meta property="og:image" content="https://i.loli.net/2021/05/22/SuqKrUIDO59Hmil.jpg">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://i.loli.net/2021/05/22/VUfI1DBMujb9vPp.jpg">
 <meta property="og:image" content="https://i.loli.net/2021/05/22/gfASlvtdiJzbmrT.jpg">
 <meta property="article:published_time" content="2021-05-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-05-26T18:51:58.887Z">
+<meta property="article:modified_time" content="2021-06-03T19:58:27.738Z">
 <meta property="article:author" content="AJiang">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="Linux">
@@ -421,7 +421,7 @@ height:50vh;
             <main class="main post-page">
     <article class="article-entry">
         <h1 id="K8S简介"><a href="#K8S简介" class="headerlink" title="K8S简介"></a>K8S简介</h1><blockquote>
-<p>Kubernetes是一个开源的容器群集管理系统，简称K8S。它用于容器化应用程序的部署，管理及扩展。</p>
+<p><code>Kubernetes</code> 是一个开源的容器群集管理系统，简称 <code>K8S</code> 。它用于容器化应用程序的部署，管理及扩展。</p>
 </blockquote>
 <h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><ul>
 <li><p><strong>自动化</strong></p>
@@ -436,33 +436,33 @@ height:50vh;
 </ul>
 <h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="Master组件"><a href="#Master组件" class="headerlink" title="Master组件"></a>Master组件</h3><ul>
 <li><p><strong>kube-apiserver</strong></p>
-<p>Kubernetes API，集群统一入口，各组件协调者，以RESTful API提供接口服务，所有对象的资源的增删改查和监听操作都交给APIServer处理后在提交给Etcd存储。</p>
+<p><code>Kubernetes API</code> ，集群统一入口，各组件协调者，以 <code>RESTful API</code> 提供接口服务，所有对象的资源的增删改查和监听操作都交给 <code>APIServer</code> 处理后再提交给 <code>Etcd</code> 存储。</p>
 </li>
 <li><p><strong>kube-controller-manager</strong></p>
-<p>处理集群中常规的后台任务，一个资源对应一个控制器，而ControllerManager就是负责管理这些控制器的。</p>
+<p>处理集群中常规的后台任务，一个资源对应一个控制器，而 <code>ControllerManager</code> 就是负责管理这些控制器的。</p>
 </li>
 <li><p><strong>kube-scheduler</strong></p>
-<p>根据调度算法为新创建的Pod选择一个node节点，可以部署在同一个节点上，也可以部署在不同节点上。</p>
+<p>根据调度算法为新创建的 <code>Pod</code> 选择一个 <code>node</code> 节点，可以部署在同一个节点上，也可以部署在不同节点上。</p>
 </li>
 <li><p><strong>etcd</strong></p>
-<p>分布式键值存储系统，用于保存群集状态数据，比如Pod、service等对象信息。</p>
+<p>分布式键值存储系统，用于保存群集状态数据，比如 <code>Pod</code> 、 <code>service</code> 等对象信息。</p>
 </li>
 </ul>
 <h3 id="Node组件"><a href="#Node组件" class="headerlink" title="Node组件"></a>Node组件</h3><ul>
 <li><p><strong>kubelet</strong></p>
-<p>kubelet是Master在Node节点上的Agent，管理本机运行容器的生命周期，比如创建容器、Pod挂载数据卷、下载Secret、获取容器节点状态工作。kubelet将每个Pod转换成一组容器。</p>
+<p><code>kubelet</code> 是 <code>Master</code> 在 <code>Node</code> 节点上的 <code>Agent</code> ，管理本机运行容器的生命周期，比如创建容器、 <code>Pod</code> 挂载数据卷、下载 <code>Secret</code> 、获取容器节点状态工作。 <code>kubelet</code> 将每个 <code>Pod</code> 转换成一组容器。</p>
 </li>
 <li><p><strong>kube-proxy</strong></p>
-<p>在node节点上实现Pod网络代理，维护网络规则和四层负载均衡工作。</p>
+<p>在 <code>node</code> 节点上实现 <code>Pod</code> 网络代理，维护网络规则和四层负载均衡工作。</p>
 </li>
 <li><p><strong>docker</strong></p>
 <p>容器引擎，运行容器。</p>
 </li>
 </ul>
 <h1 id="K8S集群部署"><a href="#K8S集群部署" class="headerlink" title="K8S集群部署"></a>K8S集群部署</h1><h2 id="环境依赖"><a href="#环境依赖" class="headerlink" title="环境依赖"></a>环境依赖</h2><ul>
-<li><strong>OS</strong>：一台2核2G内存的阿里云轻量应用服务器，一台VMware虚拟机，操作系统都为Ubuntu16.04。</li>
+<li><strong>OS</strong>：一台2核2G内存的阿里云轻量应用服务器，一台 <code>VMware</code> 虚拟机，操作系统都为 <code>Ubuntu16.04</code> 。</li>
 </ul>
-<img src="https://i.loli.net/2021/05/22/QHUi7TgWYMdfwr2.jpg" alt="Ubuntu" style="zoom: 67%;" />
+<img src="https://i.loli.net/2021/05/22/QHUi7TgWYMdfwr2.jpg" alt="Ubuntu" style="zoom: 70%;" />
 
 <ul>
 <li><strong>Docker</strong>：20.10.6</li>
@@ -491,8 +491,8 @@ height:50vh;
 <h3 id="安装flannel（node上也要安装）"><a href="#安装flannel（node上也要安装）" class="headerlink" title="安装flannel（node上也要安装）"></a>安装flannel（node上也要安装）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">wget</span> https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube<span class="literal">-flannel</span>.yml</span><br><span class="line"><span class="comment"># 修改docker镜像地址</span></span><br><span class="line">sed <span class="string">&#x27;s/quay.io\/coreos/registry.cn-hangzhou.aliyuncs.com\/imcto/g&#x27;</span></span><br><span class="line"><span class="comment"># 安装flannel</span></span><br><span class="line">sudo kubectl apply <span class="operator">-f</span> kube<span class="literal">-flannel</span>.yml</span><br></pre></td></tr></table></figure>
 
 <h3 id="初始化k8s集群"><a href="#初始化k8s集群" class="headerlink" title="初始化k8s集群"></a>初始化k8s集群</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubeadm init</span><br></pre></td></tr></table></figure>
-<img src="https://i.loli.net/2021/05/22/gfASlvtdiJzbmrT.jpg" alt="init" style="zoom:80%;" />
 
+<p><img src="https://i.loli.net/2021/05/22/gfASlvtdiJzbmrT.jpg" alt="init"></p>
 <figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#根据提示输入命令</span></span><br><span class="line">mkdir <span class="literal">-p</span> <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo <span class="built_in">cp</span> <span class="literal">-i</span> /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo chown <span class="variable">$</span>(id <span class="literal">-u</span>):<span class="variable">$</span>(id <span class="literal">-g</span>) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"><span class="comment">#将提示给的最后一行jion命令（token）记下来，然后在node节点执行</span></span><br><span class="line">kubeadm join <span class="number">121.41</span>.<span class="number">164.172</span>:<span class="number">6443</span> -<span class="literal">-token</span> abcdef.<span class="number">0123456789</span>abcdef -<span class="literal">-discovery</span><span class="literal">-token</span><span class="literal">-ca</span><span class="literal">-cert</span><span class="literal">-hash</span> sha256:b73d642a2deb12fcf40adf1f1eec1fad72ff9d892be78cd6854c456f11e1eae2</span><br></pre></td></tr></table></figure>
 
 <h3 id="Node需要安装的镜像列表（和Master一致）"><a href="#Node需要安装的镜像列表（和Master一致）" class="headerlink" title="Node需要安装的镜像列表（和Master一致）"></a>Node需要安装的镜像列表（和Master一致）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kube<span class="literal">-proxy</span>:v1.<span class="number">21.1</span></span><br><span class="line">pause:<span class="number">3.4</span>.<span class="number">1</span></span><br></pre></td></tr></table></figure>
@@ -526,29 +526,25 @@ height:50vh;
 </tr>
 </tbody></table>
 <h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><ul>
-<li>mater的硬件分配至少2核2G内存。一开始我的服务器只有1G内存，报错信息如下，升级为2G内存后问题解决。</li>
+<li><p>mater的硬件分配至少2核2G内存。一开始我的服务器只有1G内存，报错 <code>preflight[ERROR Mem]: the system RAM (936 MB) is less than the minimum 1700 MB</code> 。升级为2G内存后问题解决。</p>
+</li>
+<li><p><code>coredns</code> 镜像国内阿里云获取不到，需要在服务器上科学上网，或者让服务器从本地计算机走代理科学上网，或者也可以想办法把镜像（不止 <code>coredns</code> ）弄到阿里云，拉取到本地之后改 <code>tag</code> 。</p>
+</li>
 </ul>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">preflight[<span class="type">ERROR</span> <span class="type">Mem</span>]: the system RAM (<span class="number">936</span> MB) is less than the minimum <span class="number">1700</span> MB</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 <code>apt</code> 安装 <code>docker</code> 报错 <code>gpg: 找不到有效的 OpenPGP 数据</code> 。解决方案是将其拆分:</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#原命令</span></span><br><span class="line"><span class="comment">#$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#拆分后的命令</span></span><br><span class="line"><span class="built_in">wget</span> https://download.docker.com/linux/ubuntu/gpg</span><br><span class="line">sudo apt<span class="literal">-key</span> add gpg</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>gpg: 找不到有效的 OpenPGP 数据</li>
-</ul>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">wget</span> https://download.docker.com/linux/ubuntu/gpg</span><br><span class="line">sudo apt<span class="literal">-key</span> add gpg</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>执行sudo apt-get update出现W: GPG 错误：http: //ppa.launchpad.net precise Release: 由于没有公钥，无法验证下列签名： NO_PUBKEY 6AF0E1940624A220</li>
+<li>执行 <code>sudo apt-get update</code> 报错 <code>W: GPG 错误：http: //ppa.launchpad.net precise Release: 由于没有公钥，无法验证下列签名： NO_PUBKEY 6AF0E1940624A220</code> 。解决方案:</li>
 </ul>
 <figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo apt<span class="literal">-key</span> adv -<span class="literal">-keyserver</span> keyserver.ubuntu.com -<span class="literal">-recv</span><span class="literal">-keys</span> <span class="number">6</span>AF0E1940624A220</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>[ERROR KubeletVersion]：kubelet版本高于控制平面版本。Kubeadm，Kubectl和Kubelet的版本应该都一致。</li>
+<li>初始化报错 <code>[ERROR KubeletVersion]：kubelet版本高于控制平面版本</code>。 <code>Kubeadm</code> 、 <code>Kubectl</code> 和 <code>Kubelet</code> 的版本应该都一致。解决方法是指定控制平面版本:</li>
 </ul>
 <figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo kubeadm init -<span class="literal">-pod</span><span class="literal">-network</span><span class="literal">-cidr</span> = <span class="number">121.41</span>.<span class="number">164.172</span>/<span class="number">12</span> -<span class="literal">-kubernetes</span><span class="literal">-version</span> = v1.<span class="number">21.1</span><span class="literal">-rc</span>.<span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>8080端口没有开</li>
-</ul>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">unable to connect to the server:dial tcp [::<span class="number">1</span>]:<span class="number">8080</span>:connect: cannot assign ……</span><br></pre></td></tr></table></figure>
     </article>
     <!-- license  -->
     
@@ -557,8 +553,8 @@ height:50vh;
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href= "/2021/05/23/8-JZ5/" title= "JZ5-用两个栈实现队列">
-                    <div class="nextTitle">JZ5-用两个栈实现队列</div>
+                <a href= "/2021/05/27/4-LexicalAnalyzer/" title= "C++实现词法分析程序">
+                    <div class="nextTitle">C++实现词法分析程序</div>
                 </a>
             
         </li>
@@ -714,64 +710,9 @@ top:50vh;
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 9
+        Total : 4
         </div>
         <!-- search  -->
         
@@ -787,12 +728,7 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">05/27</span><a class="archive-post-title" href= "/2021/05/27/9-LexicalAnalyzer/" >C++实现词法分析程序</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/23</span><a class="archive-post-title" href= "/2021/05/23/8-JZ5/" >JZ5-用两个栈实现队列</a>
+            <span class="archive-post-date">05/27</span><a class="archive-post-title" href= "/2021/05/27/4-LexicalAnalyzer/" >C++实现词法分析程序</a>
         </li>
     
     
@@ -803,26 +739,6 @@ top:50vh;
     
         <li class="archive-post-item">
             <span class="archive-post-date">03/26</span><a class="archive-post-title" href= "/2021/03/26/2-Docker/" >容器相关概念</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/23</span><a class="archive-post-title" href= "/2021/03/23/7-JZ4/" >JZ4-重建二叉树</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">02/20</span><a class="archive-post-title" href= "/2021/02/20/6-JZ3/" >JZ3-从头到尾打印链表</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">01/25</span><a class="archive-post-title" href= "/2021/01/25/5-JZ2/" >JZ2-替换空格</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">01/23</span><a class="archive-post-title" href= "/2021/01/23/4-JZ1/" >JZ1-二维数组的查找</a>
         </li>
     
     
@@ -855,22 +771,6 @@ top:50vh;
         <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
     
         <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
-    
-        <span class="sidebar-tag-name" data-tags="算法"><span class="iconfont-archer">&#xe606;</span>算法</span>
-    
-        <span class="sidebar-tag-name" data-tags="剑指Offer"><span class="iconfont-archer">&#xe606;</span>剑指Offer</span>
-    
-        <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
-    
-        <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
-    
-        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
-    
-        <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
-    
-        <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
-    
-        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
     
         <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
     
@@ -912,8 +812,6 @@ jsonContent:
         <span class="sidebar-category-name" data-categories="Go语言学习笔记"><span class="iconfont-archer">&#xe60a;</span>Go语言学习笔记</span>
     
         <span class="sidebar-category-name" data-categories="系统综合实践"><span class="iconfont-archer">&#xe60a;</span>系统综合实践</span>
-    
-        <span class="sidebar-category-name" data-categories="剑指Offer"><span class="iconfont-archer">&#xe60a;</span>剑指Offer</span>
     
         <span class="sidebar-category-name" data-categories="编译原理"><span class="iconfont-archer">&#xe60a;</span>编译原理</span>
     
