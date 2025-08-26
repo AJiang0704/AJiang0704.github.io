@@ -321,9 +321,9 @@
     
     <category term="Ubuntu" scheme="https://ajiang0704.github.io/tags/Ubuntu/"/>
     
-    <category term="k8s" scheme="https://ajiang0704.github.io/tags/k8s/"/>
-    
     <category term="Docker" scheme="https://ajiang0704.github.io/tags/Docker/"/>
+    
+    <category term="k8s" scheme="https://ajiang0704.github.io/tags/k8s/"/>
     
   </entry>
   
