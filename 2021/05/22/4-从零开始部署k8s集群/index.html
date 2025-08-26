@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="cn">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="AJiang">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="AJiang">
+    
+    <meta name="keywords" content="AJiang's Blog,AJiang">
+    
+    <meta name="description" content="">
+    <meta name="description" content="K8S简介  Kubernetes 是一个开源的容器群集管理系统，简称 K8S 。它用于容器化应用程序的部署，管理及扩展。   特征 自动化 自动部署，自动重启，自动复制，自动扩容、自动更新、自动伸缩&#x2F;扩展、自动化管理资源  可移植 支持公有云，私有云，混合云，多重云  可扩展 模块化、插件化、可挂载、可组合   组件Master组件 kube-apiserver Kubernetes API ，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始部署k8s集群">
+<meta property="og:url" content="https://ajiang0704.github.io/2021/05/22/4-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%83%A8%E7%BD%B2k8s%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:site_name" content="AJiang&#39;s Blog">
+<meta property="og:description" content="K8S简介  Kubernetes 是一个开源的容器群集管理系统，简称 K8S 。它用于容器化应用程序的部署，管理及扩展。   特征 自动化 自动部署，自动重启，自动复制，自动扩容、自动更新、自动伸缩&#x2F;扩展、自动化管理资源  可移植 支持公有云，私有云，混合云，多重云  可扩展 模块化、插件化、可挂载、可组合   组件Master组件 kube-apiserver Kubernetes API ，">
+<meta property="og:locale">
+<meta property="og:image" content="https://free.picui.cn/free/2025/08/26/68ad55400e440.jpg">
+<meta property="og:image" content="https://free.picui.cn/free/2025/08/26/68ad554003090.jpg">
+<meta property="og:image" content="https://free.picui.cn/free/2025/08/26/68ad553fe4365.jpg">
+<meta property="og:image" content="https://free.picui.cn/free/2025/08/26/68ad553fe4824.jpg">
+<meta property="og:image" content="https://free.picui.cn/free/2025/08/26/68ad553fabf75.jpg">
+<meta property="article:published_time" content="2021-05-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-26T06:38:49.844Z">
+<meta property="article:author" content="AJiang">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://free.picui.cn/free/2025/08/26/68ad55400e440.jpg">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>从零开始部署k8s集群 · AJiang&#39;s Blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.1.1"><link rel="alternate" href="/atom.xml" title="AJiang's Blog" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-dracula.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+    
+        <body class="post-body">
+    
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >AJiang&#39;s Blog</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">从零开始部署k8s集群</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>AJiang's Blog</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/pic/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            从零开始部署k8s集群
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Linux">Linux</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Ubuntu">Ubuntu</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Docker">Docker</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "k8s">k8s</a>
+    
+</div>
+                
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/05/22</span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="K8S简介"><a href="#K8S简介" class="headerlink" title="K8S简介"></a>K8S简介</h1><div style = "text-indent:2em;">
+
+<p><code>Kubernetes</code> 是一个开源的容器群集管理系统，简称 <code>K8S</code> 。它用于容器化应用程序的部署，管理及扩展。</p>
+</div>
+
+<h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><ul>
+<li><p><strong>自动化</strong></p>
+<p>自动部署，自动重启，自动复制，自动扩容、自动更新、自动伸缩/扩展、自动化管理资源</p>
+</li>
+<li><p><strong>可移植</strong></p>
+<p>支持公有云，私有云，混合云，多重云</p>
+</li>
+<li><p><strong>可扩展</strong></p>
+<p>模块化、插件化、可挂载、可组合</p>
+</li>
+</ul>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="Master组件"><a href="#Master组件" class="headerlink" title="Master组件"></a>Master组件</h3><ul>
+<li><p><strong>kube-apiserver</strong></p>
+<p><code>Kubernetes API</code> ，集群统一入口，各组件协调者，以 <code>RESTful API</code> 提供接口服务，所有对象的资源的增删改查和监听操作都交给 <code>APIServer</code> 处理后再提交给 <code>Etcd</code> 存储。</p>
+</li>
+<li><p><strong>kube-controller-manager</strong></p>
+<p>处理集群中常规的后台任务，一个资源对应一个控制器，而 <code>ControllerManager</code> 就是负责管理这些控制器的。</p>
+</li>
+<li><p><strong>kube-scheduler</strong></p>
+<p>根据调度算法为新创建的 <code>Pod</code> 选择一个 <code>node</code> 节点，可以部署在同一个节点上，也可以部署在不同节点上。</p>
+</li>
+<li><p><strong>etcd</strong></p>
+<p>分布式键值存储系统，用于保存群集状态数据，比如 <code>Pod</code> 、 <code>service</code> 等对象信息。</p>
+</li>
+</ul>
+<h3 id="Node组件"><a href="#Node组件" class="headerlink" title="Node组件"></a>Node组件</h3><ul>
+<li><p><strong>kubelet</strong></p>
+<p><code>kubelet</code> 是 <code>Master</code> 在 <code>Node</code> 节点上的 <code>Agent</code> ，管理本机运行容器的生命周期，比如创建容器、 <code>Pod</code> 挂载数据卷、下载 <code>Secret</code> 、获取容器节点状态工作。 <code>kubelet</code> 将每个 <code>Pod</code> 转换成一组容器。</p>
+</li>
+<li><p><strong>kube-proxy</strong></p>
+<p>在 <code>node</code> 节点上实现 <code>Pod</code> 网络代理，维护网络规则和四层负载均衡工作。</p>
+</li>
+<li><p><strong>docker</strong></p>
+<p>容器引擎，运行容器。</p>
+</li>
+</ul>
+<h1 id="K8S集群部署"><a href="#K8S集群部署" class="headerlink" title="K8S集群部署"></a>K8S集群部署</h1><h2 id="环境依赖"><a href="#环境依赖" class="headerlink" title="环境依赖"></a>环境依赖</h2><ul>
+<li><strong>OS</strong>：一台2核2G内存的阿里云轻量应用服务器，一台 <code>VMware</code> 虚拟机，操作系统都为 <code>Ubuntu16.04</code> 。</li>
+</ul>
+<img src="https://free.picui.cn/free/2025/08/26/68ad55400e440.jpg" alt="OS" style="zoom: 70%;" />
+
+<ul>
+<li><strong>Docker</strong>：20.10.6</li>
+</ul>
+<p><img src="https://free.picui.cn/free/2025/08/26/68ad554003090.jpg" alt="Docker"></p>
+<ul>
+<li><strong>K8s</strong>：v1.21.1</li>
+</ul>
+<p><img src="https://free.picui.cn/free/2025/08/26/68ad553fe4365.jpg" alt="K8s"></p>
+<h2 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h2><h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#更新一下apt包索引</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update</span><br><span class="line"><span class="comment">#使apt可以通过HTTPS使用存储库</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install <span class="literal">-y</span> apt<span class="literal">-transport</span><span class="literal">-https</span> ca<span class="literal">-certificates</span> <span class="built_in">curl</span> software<span class="literal">-properties</span><span class="literal">-common</span></span><br><span class="line"><span class="comment">#添加Docker官方的GPG密钥</span></span><br><span class="line"><span class="built_in">curl</span> <span class="literal">-fsSL</span> https://download.docker.com/linux/ubuntu/gpg | sudo apt<span class="literal">-key</span> add -</span><br><span class="line"><span class="comment">#设置stable存储库</span></span><br><span class="line">sudo <span class="built_in">add-apt</span><span class="literal">-repository</span> <span class="string">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu <span class="variable">$</span>(lsb_release -cs) stable&quot;</span></span><br><span class="line"><span class="comment">#再更新一下apt包索引</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update</span><br><span class="line"><span class="comment">#安装最新版本的Docker CE</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install <span class="literal">-y</span> docker<span class="literal">-ce</span></span><br><span class="line"><span class="comment">#验证docker</span></span><br><span class="line">sudo docker run hello<span class="literal">-world</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装kubelet-kubeadm-kubectl（阿里源）"><a href="#安装kubelet-kubeadm-kubectl（阿里源）" class="headerlink" title="安装kubelet kubeadm kubectl（阿里源）"></a>安装kubelet kubeadm kubectl（阿里源）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update &amp;&amp; apt<span class="literal">-get</span> install <span class="literal">-y</span> apt<span class="literal">-transport</span><span class="literal">-https</span></span><br><span class="line"><span class="comment"># 加载key</span></span><br><span class="line">sudo <span class="built_in">curl</span> https://mirrors.aliyun.com/kubernetes/apt/doc/apt<span class="literal">-key</span>.gpg | apt<span class="literal">-key</span> add - </span><br><span class="line"><span class="comment"># 添加源</span></span><br><span class="line">sudo <span class="built_in">cat</span> &lt;&lt;EOF &gt;/etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes<span class="literal">-xenial</span> main</span><br><span class="line">EOF</span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">sudo apt<span class="literal">-get</span> update</span><br><span class="line">sudo apt<span class="literal">-get</span> install <span class="literal">-y</span> kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭swap"><a href="#关闭swap" class="headerlink" title="关闭swap"></a>关闭swap</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#临时关闭swap（立即生效）</span></span><br><span class="line">sudo swapoff <span class="literal">-a</span></span><br><span class="line"><span class="comment">#永久关闭swap</span></span><br><span class="line">vim /etc/fstab</span><br><span class="line"><span class="comment">#打开fstab文件，注释掉有swap的那一行，然后保存</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">systemctl stop firewalld &amp; systemctl disable firewalld</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sed <span class="literal">-i</span> <span class="string">&quot;s/^SELINUX=/SELINUX=disabled/&quot;</span> /etc/selinux/config</span><br><span class="line">setenforce <span class="number">0</span> </span><br></pre></td></tr></table></figure>
+
+<h3 id="修改cgroupfs"><a href="#修改cgroupfs" class="headerlink" title="修改cgroupfs"></a>修改cgroupfs</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/systemd/system/kubelet.service.d/<span class="number">10</span><span class="literal">-kubeadm</span>.conf</span><br><span class="line"><span class="comment">#增加--cgroup-driver=cgroupfs</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#重启kubelet</span></span><br><span class="line">sudo systemctl daemon<span class="literal">-reload</span></span><br><span class="line">sudo systemctl restart kubelet </span><br></pre></td></tr></table></figure>
+
+<h3 id="查看Master需要安装的镜像列表"><a href="#查看Master需要安装的镜像列表" class="headerlink" title="查看Master需要安装的镜像列表"></a>查看Master需要安装的镜像列表</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubeadm config images list</span><br></pre></td></tr></table></figure>
+<p><img src="https://free.picui.cn/free/2025/08/26/68ad553fe4824.jpg" alt="list"></p>
+<h3 id="下拉镜像脚本"><a href="#下拉镜像脚本" class="headerlink" title="下拉镜像脚本"></a>下拉镜像脚本</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">images=(</span><br><span class="line">	kube-apiserver:v1.21.1</span><br><span class="line">	kube-controller-manager:v1.21.1</span><br><span class="line">	kube-scheduler:v1.21.1</span><br><span class="line">	kube-proxy:v1.21.1</span><br><span class="line">	pause:3.4.1</span><br><span class="line">	etcd:3.4.13-0</span><br><span class="line">	coredns/coredns:v1.8.0</span><br><span class="line">)</span><br><span class="line">for imageName in $&#123;images[@]&#125;;</span><br><span class="line">do</span><br><span class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125; k8s.gcr.io/$&#123;imageName&#125;</span><br><span class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装flannel（node上也要安装）"><a href="#安装flannel（node上也要安装）" class="headerlink" title="安装flannel（node上也要安装）"></a>安装flannel（node上也要安装）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">wget</span> https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube<span class="literal">-flannel</span>.yml</span><br><span class="line"><span class="comment"># 修改docker镜像地址</span></span><br><span class="line">sed <span class="string">&#x27;s/quay.io\/coreos/registry.cn-hangzhou.aliyuncs.com\/imcto/g&#x27;</span></span><br><span class="line"><span class="comment"># 安装flannel</span></span><br><span class="line">sudo kubectl apply <span class="operator">-f</span> kube<span class="literal">-flannel</span>.yml</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化k8s集群"><a href="#初始化k8s集群" class="headerlink" title="初始化k8s集群"></a>初始化k8s集群</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubeadm init</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://free.picui.cn/free/2025/08/26/68ad553fabf75.jpg" alt="init"></p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#根据提示输入命令</span></span><br><span class="line">mkdir <span class="literal">-p</span> <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo <span class="built_in">cp</span> <span class="literal">-i</span> /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo chown <span class="variable">$</span>(id <span class="literal">-u</span>):<span class="variable">$</span>(id <span class="literal">-g</span>) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"><span class="comment">#将提示给的最后一行jion命令（token）记下来，然后在node节点执行</span></span><br><span class="line">kubeadm join <span class="number">121.41</span>.<span class="number">164.172</span>:<span class="number">6443</span> -<span class="literal">-token</span> abcdef.<span class="number">0123456789</span>abcdef -<span class="literal">-discovery</span><span class="literal">-token</span><span class="literal">-ca</span><span class="literal">-cert</span><span class="literal">-hash</span> sha256:b73d642a2deb12fcf40adf1f1eec1fad72ff9d892be78cd6854c456f11e1eae2</span><br></pre></td></tr></table></figure>
+
+<h3 id="Node需要安装的镜像列表（和Master一致）"><a href="#Node需要安装的镜像列表（和Master一致）" class="headerlink" title="Node需要安装的镜像列表（和Master一致）"></a>Node需要安装的镜像列表（和Master一致）</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kube<span class="literal">-proxy</span>:v1.<span class="number">21.1</span></span><br><span class="line">pause:<span class="number">3.4</span>.<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="下拉镜像脚本-1"><a href="#下拉镜像脚本-1" class="headerlink" title="下拉镜像脚本"></a>下拉镜像脚本</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">images=(</span><br><span class="line">	kube-proxy:v1.21.1</span><br><span class="line">	pause:3.4.1</span><br><span class="line">)</span><br><span class="line">for imageName in $&#123;images[@]&#125;;</span><br><span class="line">do</span><br><span class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125; k8s.gcr.io/$&#123;imageName&#125;</span><br><span class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$&#123;imageName&#125;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行node节点加入集群命令"><a href="#执行node节点加入集群命令" class="headerlink" title="执行node节点加入集群命令"></a>执行node节点加入集群命令</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#重置node节点</span></span><br><span class="line">kubeadm reset</span><br><span class="line"><span class="comment">#执行之前记下来的join命令</span></span><br><span class="line">kubeadm join <span class="number">121.41</span>.<span class="number">164.172</span>:<span class="number">6443</span> -<span class="literal">-token</span> abcdef.<span class="number">0123456789</span>abcdef -<span class="literal">-discovery</span><span class="literal">-token</span><span class="literal">-ca</span><span class="literal">-cert</span><span class="literal">-hash</span> sha256:b73d642a2deb12fcf40adf1f1eec1fad72ff9d892be78cd6854c456f11e1eae2</span><br></pre></td></tr></table></figure>
+
+<h2 id="集群测试"><a href="#集群测试" class="headerlink" title="集群测试"></a>集群测试</h2><h3 id="查看节点状态"><a href="#查看节点状态" class="headerlink" title="查看节点状态"></a>查看节点状态</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubectl get pods <span class="literal">-n</span> kube<span class="literal">-system</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>系统</th>
+<th>IP地址</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>k8s-master</td>
+<td>Ubuntu 16.04</td>
+<td>121.41.164.172</td>
+<td>master</td>
+</tr>
+<tr>
+<td>k8s-node</td>
+<td>Ubuntu 16.04</td>
+<td>218.85.157.99</td>
+<td>node</td>
+</tr>
+</tbody></table>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><ul>
+<li><p>mater的硬件分配至少2核2G内存。一开始我的服务器只有1G内存，报错 <code>preflight[ERROR Mem]: the system RAM (936 MB) is less than the minimum 1700 MB</code> 。升级为2G内存后问题解决。</p>
+</li>
+<li><p><code>coredns</code> 镜像国内阿里云获取不到，需要在服务器上科学上网，或者让服务器从本地计算机走代理科学上网，或者也可以想办法把镜像（不止 <code>coredns</code> ）弄到阿里云，拉取到本地之后改 <code>tag</code> 。</p>
+</li>
+</ul>
+<ul>
+<li>使用 <code>apt</code> 安装 <code>docker</code> 报错 <code>gpg: 找不到有效的 OpenPGP 数据</code> 。解决方案是将其拆分:</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment">#原命令</span></span><br><span class="line"><span class="comment">#$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#拆分后的命令</span></span><br><span class="line"><span class="built_in">wget</span> https://download.docker.com/linux/ubuntu/gpg</span><br><span class="line">sudo apt<span class="literal">-key</span> add gpg</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>执行 <code>sudo apt-get update</code> 报错 <code>W: GPG 错误：http: //ppa.launchpad.net precise Release: 由于没有公钥，无法验证下列签名： NO_PUBKEY 6AF0E1940624A220</code> 。解决方案:</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo apt<span class="literal">-key</span> adv -<span class="literal">-keyserver</span> keyserver.ubuntu.com -<span class="literal">-recv</span><span class="literal">-keys</span> <span class="number">6</span>AF0E1940624A220</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>初始化报错 <code>[ERROR KubeletVersion]：kubelet版本高于控制平面版本</code>。 <code>Kubeadm</code> 、 <code>Kubectl</code> 和 <code>Kubelet</code> 的版本应该都一致。解决方法是指定控制平面版本:</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo kubeadm init -<span class="literal">-pod</span><span class="literal">-network</span><span class="literal">-cidr</span> = <span class="number">121.41</span>.<span class="number">164.172</span>/<span class="number">12</span> -<span class="literal">-kubernetes</span><span class="literal">-version</span> = v1.<span class="number">21.1</span><span class="literal">-rc</span>.<span class="number">1</span></span><br></pre></td></tr></table></figure>
+    </article>
+    <!-- license  -->
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2021/05/27/5-C++%E5%AE%9E%E7%8E%B0%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E7%A8%8B%E5%BA%8F/" title= "C++实现词法分析程序">
+                    <div class="nextTitle">C++实现词法分析程序</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2021/03/26/3-%E5%AE%B9%E5%99%A8%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/" title= "容器相关概念">
+                    <div class="prevTitle">容器相关概念</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "p5KlOzhAb5PNGyA0Kpv3CkMX-gzGzoHsz",
+        appKey: "O9ffEiE6x6X0dt0nuStUfR9X",
+        placeholder: "",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:ajiang0704@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="https://github.com/AJiang0704" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/pic/wechat.jpg" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/pic/qq.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://space.bilibili.com/26608488" class="iconfont-archer bilibili" target="_blank" title=bilibili></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#K8S%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">K8S简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%BE%81"><span class="toc-number">1.1.</span> <span class="toc-text">特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Master%E7%BB%84%E4%BB%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">Master组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Node%E7%BB%84%E4%BB%B6"><span class="toc-number">1.2.2.</span> <span class="toc-text">Node组件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#K8S%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="toc-number">2.</span> <span class="toc-text">K8S集群部署</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BE%9D%E8%B5%96"><span class="toc-number">2.1.</span> <span class="toc-text">环境依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">安装过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Docker"><span class="toc-number">2.2.1.</span> <span class="toc-text">安装Docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85kubelet-kubeadm-kubectl%EF%BC%88%E9%98%BF%E9%87%8C%E6%BA%90%EF%BC%89"><span class="toc-number">2.2.2.</span> <span class="toc-text">安装kubelet kubeadm kubectl（阿里源）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%ADswap"><span class="toc-number">2.2.3.</span> <span class="toc-text">关闭swap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">2.2.4.</span> <span class="toc-text">关闭防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%ADselinux"><span class="toc-number">2.2.5.</span> <span class="toc-text">关闭selinux</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9cgroupfs"><span class="toc-number">2.2.6.</span> <span class="toc-text">修改cgroupfs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8BMaster%E9%9C%80%E8%A6%81%E5%AE%89%E8%A3%85%E7%9A%84%E9%95%9C%E5%83%8F%E5%88%97%E8%A1%A8"><span class="toc-number">2.2.7.</span> <span class="toc-text">查看Master需要安装的镜像列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E6%8B%89%E9%95%9C%E5%83%8F%E8%84%9A%E6%9C%AC"><span class="toc-number">2.2.8.</span> <span class="toc-text">下拉镜像脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85flannel%EF%BC%88node%E4%B8%8A%E4%B9%9F%E8%A6%81%E5%AE%89%E8%A3%85%EF%BC%89"><span class="toc-number">2.2.9.</span> <span class="toc-text">安装flannel（node上也要安装）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96k8s%E9%9B%86%E7%BE%A4"><span class="toc-number">2.2.10.</span> <span class="toc-text">初始化k8s集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Node%E9%9C%80%E8%A6%81%E5%AE%89%E8%A3%85%E7%9A%84%E9%95%9C%E5%83%8F%E5%88%97%E8%A1%A8%EF%BC%88%E5%92%8CMaster%E4%B8%80%E8%87%B4%EF%BC%89"><span class="toc-number">2.2.11.</span> <span class="toc-text">Node需要安装的镜像列表（和Master一致）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E6%8B%89%E9%95%9C%E5%83%8F%E8%84%9A%E6%9C%AC-1"><span class="toc-number">2.2.12.</span> <span class="toc-text">下拉镜像脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8Cnode%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4%E5%91%BD%E4%BB%A4"><span class="toc-number">2.2.13.</span> <span class="toc-text">执行node节点加入集群命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95"><span class="toc-number">2.3.</span> <span class="toc-text">集群测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81"><span class="toc-number">2.3.1.</span> <span class="toc-text">查看节点状态</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95"><span class="toc-number">2.4.</span> <span class="toc-text">踩坑记录</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 13
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2022 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/15</span><a class="archive-post-title" href= "/2022/06/15/13-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8/" >从零开始部署服务器</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/28</span><a class="archive-post-title" href= "/2021/09/28/12-%E5%AF%B9%E7%A7%B0%E7%9A%84%E4%BA%8C%E5%8F%89%E6%A0%91/" >对称的二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/23</span><a class="archive-post-title" href= "/2021/08/23/11-%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91/" >从上往下打印二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/06</span><a class="archive-post-title" href= "/2021/08/06/10-%E7%94%A8%E4%B8%A4%E4%B8%AA%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97/" >用两个栈实现队列</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/05</span><a class="archive-post-title" href= "/2021/08/05/9-%E9%87%8D%E5%BB%BA%E4%BA%8C%E5%8F%89%E6%A0%91/" >重建二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/04</span><a class="archive-post-title" href= "/2021/08/04/8-%E4%BB%8E%E5%A4%B4%E5%88%B0%E5%B0%BE%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/" >从尾到头打印链表</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/03</span><a class="archive-post-title" href= "/2021/08/03/7-%E6%9B%BF%E6%8D%A2%E7%A9%BA%E6%A0%BC/" >替换空格</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/02</span><a class="archive-post-title" href= "/2021/08/02/6-%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9F%A5%E6%89%BE/" >二维数组中的查找</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/27</span><a class="archive-post-title" href= "/2021/05/27/5-C++%E5%AE%9E%E7%8E%B0%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E7%A8%8B%E5%BA%8F/" >C++实现词法分析程序</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span><a class="archive-post-title" href= "/2021/05/22/4-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%83%A8%E7%BD%B2k8s%E9%9B%86%E7%BE%A4/" >从零开始部署k8s集群</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/26</span><a class="archive-post-title" href= "/2021/03/26/3-%E5%AE%B9%E5%99%A8%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/" >容器相关概念</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/30</span><a class="archive-post-title" href= "/2019/09/30/2-Go%E8%AF%AD%E8%A8%80%E7%9A%84Slice/" >Go语言的Slice</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2017 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/11</span><a class="archive-post-title" href= "/2017/11/11/1-%E6%88%91%E7%9A%84%E9%95%BF%E5%AE%89/" >我的长安</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="剑指Offer"><span class="iconfont-archer">&#xe606;</span>剑指Offer</span>
+    
+        <span class="sidebar-tag-name" data-tags="Golang"><span class="iconfont-archer">&#xe606;</span>Golang</span>
+    
+        <span class="sidebar-tag-name" data-tags="Go语言"><span class="iconfont-archer">&#xe606;</span>Go语言</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+    
+        <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
+    
+        <span class="sidebar-tag-name" data-tags="队列"><span class="iconfont-archer">&#xe606;</span>队列</span>
+    
+        <span class="sidebar-tag-name" data-tags="Apache"><span class="iconfont-archer">&#xe606;</span>Apache</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
+    
+        <span class="sidebar-tag-name" data-tags="MySQL"><span class="iconfont-archer">&#xe606;</span>MySQL</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="Ubuntu"><span class="iconfont-archer">&#xe606;</span>Ubuntu</span>
+    
+        <span class="sidebar-tag-name" data-tags="随笔"><span class="iconfont-archer">&#xe606;</span>随笔</span>
+    
+        <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
+    
+        <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
+    
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+    
+        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
+    
+        <span class="sidebar-tag-name" data-tags="编译原理"><span class="iconfont-archer">&#xe606;</span>编译原理</span>
+    
+        <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
+    
+        <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
+    
+        <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="《剑指Offer》的Go语言实现"><span class="iconfont-archer">&#xe60a;</span>《剑指Offer》的Go语言实现</span>
+    
+        <span class="sidebar-category-name" data-categories="技术杂谈"><span class="iconfont-archer">&#xe60a;</span>技术杂谈</span>
+    
+        <span class="sidebar-category-name" data-categories="Go语言学习笔记"><span class="iconfont-archer">&#xe60a;</span>Go语言学习笔记</span>
+    
+        <span class="sidebar-category-name" data-categories="随笔"><span class="iconfont-archer">&#xe60a;</span>随笔</span>
+    
+        <span class="sidebar-category-name" data-categories="C＋＋学习笔记"><span class="iconfont-archer">&#xe60a;</span>C＋＋学习笔记</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "AJiang"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
+     
+    </body>
+</html>
+
+

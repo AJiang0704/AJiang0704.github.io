@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="cn">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="AJiang">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="AJiang">
+    
+    <meta name="keywords" content="AJiang's Blog,AJiang">
+    
+    <meta name="description" content="">
+    <meta name="description" content="词法分析的目的是将输入的源程序进行划分，给出基本符号（token）的序列，并掠过注解和空格等分隔符号。基本符号是与输入的语言定义的词法所规定的终结符。 本文编制了一个读单词过程。从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。遇到错误时提示，然后跳过错误部分继续进行。 程序代码LexicalAnalyz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++实现词法分析程序">
+<meta property="og:url" content="https://ajiang0704.github.io/2021/05/27/5-C++%E5%AE%9E%E7%8E%B0%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E7%A8%8B%E5%BA%8F/index.html">
+<meta property="og:site_name" content="AJiang&#39;s Blog">
+<meta property="og:description" content="词法分析的目的是将输入的源程序进行划分，给出基本符号（token）的序列，并掠过注解和空格等分隔符号。基本符号是与输入的语言定义的词法所规定的终结符。 本文编制了一个读单词过程。从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。遇到错误时提示，然后跳过错误部分继续进行。 程序代码LexicalAnalyz">
+<meta property="og:locale">
+<meta property="og:image" content="https://free.picui.cn/free/2025/08/26/68ad5709dfc99.png">
+<meta property="article:published_time" content="2021-05-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-26T06:42:01.869Z">
+<meta property="article:author" content="AJiang">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="编译原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://free.picui.cn/free/2025/08/26/68ad5709dfc99.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>C++实现词法分析程序 · AJiang&#39;s Blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.1.1"><link rel="alternate" href="/atom.xml" title="AJiang's Blog" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-dracula.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+    
+        <body class="post-body">
+    
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >AJiang&#39;s Blog</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">C++实现词法分析程序</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>AJiang's Blog</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/pic/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            C++实现词法分析程序
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "C++">C++</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "编译原理">编译原理</a>
+    
+</div>
+                
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/05/27</span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <p>词法分析的目的是将输入的源程序进行划分，给出基本符号（<code>token</code>）的序列，并掠过注解和空格等分隔符号。基本符号是与输入的语言定义的词法所规定的终结符。</p>
+<p>本文编制了一个读单词过程。从输入的源程序中，识别出各个具有独立意义的单词，即基本保留字、标识符、常数、运算符、分隔符五大类。并依次输出各个单词的内部编码及单词符号自身值。遇到错误时提示，然后跳过错误部分继续进行。</p>
+<h1 id="程序代码"><a href="#程序代码" class="headerlink" title="程序代码"></a>程序代码</h1><h2 id="LexicalAnalyzer-cpp"><a href="#LexicalAnalyzer-cpp" class="headerlink" title="LexicalAnalyzer.cpp"></a>LexicalAnalyzer.cpp</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> syn = <span class="number">-1</span>;       <span class="comment">//种别码    </span></span><br><span class="line"><span class="keyword">int</span> startp = <span class="number">0</span>;     <span class="comment">//源程序字符数组内的初始指针</span></span><br><span class="line"><span class="keyword">int</span> endp = <span class="number">0</span>;       <span class="comment">//源程序字符数组内的末位指针 </span></span><br><span class="line"><span class="keyword">char</span> rp[<span class="number">100000</span>];    <span class="comment">//即ResourceProject源程序字符数组</span></span><br><span class="line"><span class="keyword">char</span> token[<span class="number">20</span>];     <span class="comment">//存放识别出来的词 </span></span><br><span class="line"><span class="keyword">int</span> ff = <span class="number">0</span>, flag = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> flag2 = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*32个保留字*/</span></span><br><span class="line"><span class="keyword">char</span> reserveWord[<span class="number">32</span>][<span class="number">10</span>] = &#123;</span><br><span class="line">    <span class="string">&quot;auto&quot;</span>, <span class="string">&quot;break&quot;</span>, <span class="string">&quot;case&quot;</span>, <span class="string">&quot;char&quot;</span>, <span class="string">&quot;const&quot;</span>, <span class="string">&quot;continue&quot;</span>, <span class="string">&quot;default&quot;</span>, <span class="string">&quot;do&quot;</span>, <span class="string">&quot;double&quot;</span>, </span><br><span class="line">    <span class="string">&quot;else&quot;</span>, <span class="string">&quot;enum&quot;</span>, <span class="string">&quot;extern&quot;</span>, <span class="string">&quot;float&quot;</span>, <span class="string">&quot;for&quot;</span>, <span class="string">&quot;goto&quot;</span>, <span class="string">&quot;if&quot;</span>, <span class="string">&quot;int&quot;</span>, <span class="string">&quot;long&quot;</span>, <span class="string">&quot;register&quot;</span>, </span><br><span class="line">    <span class="string">&quot;return&quot;</span>, <span class="string">&quot;short&quot;</span>, <span class="string">&quot;signed&quot;</span>, <span class="string">&quot;sizeof&quot;</span>, <span class="string">&quot;static&quot;</span>, <span class="string">&quot;struct&quot;</span>, <span class="string">&quot;switch&quot;</span>, <span class="string">&quot;typedef&quot;</span>, </span><br><span class="line">    <span class="string">&quot;union&quot;</span>, <span class="string">&quot;unsigned&quot;</span>, <span class="string">&quot;void&quot;</span>, <span class="string">&quot;volatile&quot;</span>, <span class="string">&quot;while&quot;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*22个运算符*/</span></span><br><span class="line"><span class="keyword">char</span> operatorWord[<span class="number">22</span>][<span class="number">10</span>] = &#123;</span><br><span class="line">    <span class="string">&quot;+&quot;</span>, <span class="string">&quot;-&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;%&quot;</span>, <span class="string">&quot;&lt;&quot;</span>, <span class="string">&quot;&gt;&quot;</span>, <span class="string">&quot;=&quot;</span>, <span class="string">&quot;!&quot;</span>, <span class="string">&quot;&amp;&quot;</span>, <span class="string">&quot;|&quot;</span>, <span class="string">&quot;^&quot;</span>, <span class="string">&quot;++&quot;</span>, <span class="string">&quot;--&quot;</span>, <span class="string">&quot;&lt;=&quot;</span>, <span class="string">&quot;&lt;&lt;&quot;</span>, </span><br><span class="line">    <span class="string">&quot;&gt;=&quot;</span>, <span class="string">&quot;&gt;&gt;&quot;</span>, <span class="string">&quot;==&quot;</span>, <span class="string">&quot;!=&quot;</span>, <span class="string">&quot;&amp;&amp;&quot;</span>, <span class="string">&quot;||&quot;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*16个分隔符*/</span></span><br><span class="line"><span class="keyword">char</span> borderWord[<span class="number">16</span>][<span class="number">10</span>] = &#123;</span><br><span class="line">    <span class="string">&quot;(&quot;</span>, <span class="string">&quot;)&quot;</span>, <span class="string">&quot;[&quot;</span>, <span class="string">&quot;]&quot;</span>, <span class="string">&quot;&#123;&quot;</span>, <span class="string">&quot;&#125;&quot;</span>, <span class="string">&quot;;&quot;</span>, <span class="string">&quot;,&quot;</span>, <span class="string">&quot;\&quot;&quot;</span>, <span class="string">&quot;\&#x27;&quot;</span>, <span class="string">&quot;#&quot;</span>, <span class="string">&quot;~&quot;</span>, <span class="string">&quot;\\&quot;</span>, <span class="string">&quot;.&quot;</span>, <span class="string">&quot;\?&quot;</span>, <span class="string">&quot;:&quot;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*过滤源程序函数*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Init_Resource</span><span class="params">( <span class="keyword">char</span> rp[] )</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">char</span> temp[<span class="number">100000</span>];     <span class="comment">//临时数组 </span></span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>( i = <span class="number">0</span> ; i &lt; startp ; i ++ ) &#123;</span><br><span class="line">        <span class="comment">//过滤头文件 </span></span><br><span class="line">        <span class="keyword">if</span>( rp[i] == <span class="string">&#x27;#&#x27;</span> &amp;&amp; rp[i + <span class="number">1</span>] == <span class="string">&#x27;i&#x27;</span> &amp;&amp; </span><br><span class="line">            rp[i + <span class="number">2</span>] == <span class="string">&#x27;n&#x27;</span> &amp;&amp; rp[i + <span class="number">3</span>] == <span class="string">&#x27;c&#x27;</span> &amp;&amp; </span><br><span class="line">            rp[i + <span class="number">4</span>] == <span class="string">&#x27;l&#x27;</span> &amp;&amp; rp[i + <span class="number">5</span>] == <span class="string">&#x27;u&#x27;</span> &amp;&amp; </span><br><span class="line">            rp[i + <span class="number">6</span>] == <span class="string">&#x27;d&#x27;</span> &amp;&amp; rp[i + <span class="number">7</span>] == <span class="string">&#x27;e&#x27;</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>( <span class="string">&quot;头文件: #include&quot;</span> );</span><br><span class="line">            <span class="keyword">while</span>( rp[i] != <span class="string">&#x27;&lt;&#x27;</span> ) &#123;</span><br><span class="line">                i ++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span>( rp[i] != <span class="string">&#x27;\n&#x27;</span> ) &#123;</span><br><span class="line">                <span class="built_in">printf</span>( <span class="string">&quot;%c&quot;</span>, rp[i++] );</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">printf</span>( <span class="string">&quot;\n&quot;</span> );</span><br><span class="line">        &#125; </span><br><span class="line">         </span><br><span class="line">        <span class="comment">//删除单行注释</span></span><br><span class="line">        <span class="keyword">if</span>( rp[i] == <span class="string">&#x27;/&#x27;</span> &amp;&amp; rp[i + <span class="number">1</span>] == <span class="string">&#x27;/&#x27;</span> ) &#123;</span><br><span class="line">            <span class="keyword">while</span>( rp[i] != <span class="string">&#x27;\n&#x27;</span> ) &#123;</span><br><span class="line">                i ++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//删除多行注释</span></span><br><span class="line">        <span class="keyword">if</span>( rp[i] == <span class="string">&#x27;/&#x27;</span> &amp;&amp; rp[i + <span class="number">1</span>] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            <span class="keyword">int</span> flag3 = <span class="number">1</span>;</span><br><span class="line">            i = i + <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">for</span>( <span class="keyword">int</span> j = i ; j &lt; startp ; j ++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span>( rp[j] == <span class="string">&#x27;*&#x27;</span> &amp;&amp; rp[j + <span class="number">1</span>] == <span class="string">&#x27;/&#x27;</span> ) &#123;</span><br><span class="line">                    i = j + <span class="number">2</span>;</span><br><span class="line">                    flag3 = <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125; </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>( flag3 == <span class="number">1</span> ) &#123;</span><br><span class="line">                flag2 = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//删除换行符 制表符</span></span><br><span class="line">        <span class="keyword">if</span>( rp[i] != <span class="string">&#x27;\n&#x27;</span> &amp;&amp; rp[i] != <span class="string">&#x27;\t&#x27;</span> ) &#123;</span><br><span class="line">            temp[count] = rp[i];</span><br><span class="line">            count ++; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">    temp[count] =<span class="string">&#x27;$&#x27;</span>;<span class="comment">//末位增加结束符 </span></span><br><span class="line">    <span class="built_in">strcpy</span>( rp, temp );</span><br><span class="line">    <span class="keyword">return</span> count;          </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*判断是否为数字*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">IsDigit</span><span class="params">( <span class="keyword">char</span> digit )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>( digit &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; digit &lt;= <span class="string">&#x27;9&#x27;</span> ) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*判断是否为字母*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">IsLetter</span><span class="params">( <span class="keyword">char</span> letter )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>( ( letter &gt;= <span class="string">&#x27;a&#x27;</span> &amp;&amp; letter &lt;= <span class="string">&#x27;z&#x27;</span> ) || </span><br><span class="line">        ( letter &gt;= <span class="string">&#x27;A&#x27;</span> &amp;&amp; letter &lt;= <span class="string">&#x27;Z&#x27;</span> ) || letter == <span class="string">&#x27;_&#x27;</span> ) &#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*查找保留字 种别码1~32*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">searchReserve</span><span class="params">( <span class="keyword">char</span> reserveWord[][<span class="number">10</span>], <span class="keyword">char</span> s[] )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span>( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++ ) &#123;</span><br><span class="line">        <span class="keyword">if</span>( <span class="built_in">strcmp</span>( reserveWord[i], s ) == <span class="number">0</span> ) &#123;</span><br><span class="line">            i ++;</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*扫描*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Scaning</span><span class="params">( <span class="keyword">char</span> rp[] )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    ch = rp[startp];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//过滤空格</span></span><br><span class="line">    <span class="keyword">while</span>( ch == <span class="string">&#x27; &#x27;</span> ) &#123;</span><br><span class="line">        startp ++;</span><br><span class="line">        ch = rp[startp];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//每次收集前先清零</span></span><br><span class="line">    <span class="built_in">memset</span>( token, <span class="string">&#x27;\0&#x27;</span>, <span class="keyword">sizeof</span>(token) );</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*查找运算符 种别码33~54*/</span></span><br><span class="line">    <span class="comment">//加+ 减- 乘* 除/ 求余% 小于&lt; 大于&gt; 赋值= 非! 位与&amp; 位或| 位异或^ 33~44</span></span><br><span class="line">    <span class="keyword">if</span>( ch == <span class="string">&#x27;+&#x27;</span> || ch == <span class="string">&#x27;-&#x27;</span> || ch == <span class="string">&#x27;*&#x27;</span> || ch == <span class="string">&#x27;/&#x27;</span> || ch == <span class="string">&#x27;%&#x27;</span> || </span><br><span class="line">        ch == <span class="string">&#x27;&lt;&#x27;</span> || ch == <span class="string">&#x27;&gt;&#x27;</span> || ch == <span class="string">&#x27;=&#x27;</span> || ch == <span class="string">&#x27;!&#x27;</span> || ch == <span class="string">&#x27;&amp;&#x27;</span> ||</span><br><span class="line">        ch == <span class="string">&#x27;|&#x27;</span> || ch == <span class="string">&#x27;^&#x27;</span>) &#123;</span><br><span class="line">        token[<span class="number">0</span>] = rp[startp];</span><br><span class="line">        token[<span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">        <span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; <span class="number">12</span>; i ++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span>( <span class="built_in">strcmp</span>( token, operatorWord[i] ) == <span class="number">0</span> ) &#123;</span><br><span class="line">                    syn = <span class="number">33</span> + i;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;+&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;+&#x27;</span> )        syn = <span class="number">45</span>;   <span class="comment">//自增++ 45</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;-&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;-&#x27;</span> )   syn = <span class="number">46</span>;   <span class="comment">//自减-- 46</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;&lt;&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;=&#x27;</span> )   syn = <span class="number">47</span>;   <span class="comment">//小于等于&lt;= 47          </span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;&lt;&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;&lt;&#x27;</span> )   syn = <span class="number">48</span>;   <span class="comment">//左移&lt;&lt; 48         </span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;&gt;&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;=&#x27;</span> )   syn = <span class="number">49</span>;   <span class="comment">//大于等于&gt;= 49</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;&gt;&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;&gt;&#x27;</span> )   syn = <span class="number">50</span>;   <span class="comment">//右移&gt;&gt; 50           </span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;=&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;=&#x27;</span> )   syn = <span class="number">51</span>;   <span class="comment">//等于== 51             </span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;!&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;=&#x27;</span> )   syn = <span class="number">52</span>;   <span class="comment">//不等于!= 52          </span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;&amp;&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;&amp;&#x27;</span> )   syn = <span class="number">53</span>;   <span class="comment">//逻辑与&amp;&amp; 53         </span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;|&#x27;</span> &amp;&amp; rp[startp + <span class="number">1</span>] == <span class="string">&#x27;|&#x27;</span> )   syn = <span class="number">54</span>;   <span class="comment">//逻辑或|| 54</span></span><br><span class="line">        <span class="keyword">if</span>( syn &gt;= <span class="number">45</span> &amp;&amp; syn &lt;= <span class="number">54</span> ) startp ++;</span><br><span class="line">        startp ++;</span><br><span class="line">        <span class="keyword">return</span> syn;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/*查找分隔符 种别码55~70*/</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( ch == <span class="string">&#x27;(&#x27;</span> || ch == <span class="string">&#x27;)&#x27;</span> || ch == <span class="string">&#x27;[&#x27;</span>  || ch == <span class="string">&#x27;]&#x27;</span>  || ch == <span class="string">&#x27;&#123;&#x27;</span>  || </span><br><span class="line">             ch == <span class="string">&#x27;&#125;&#x27;</span> || ch == <span class="string">&#x27;;&#x27;</span> || ch == <span class="string">&#x27;,&#x27;</span>  || ch == <span class="string">&#x27;\&quot;&#x27;</span> || ch == <span class="string">&#x27;\&#x27;&#x27;</span> ||</span><br><span class="line">             ch == <span class="string">&#x27;#&#x27;</span> || ch == <span class="string">&#x27;~&#x27;</span> || ch == <span class="string">&#x27;\\&#x27;</span> || ch == <span class="string">&#x27;.&#x27;</span>  || ch == <span class="string">&#x27;\?&#x27;</span> ||</span><br><span class="line">             ch == <span class="string">&#x27;:&#x27;</span>) &#123;</span><br><span class="line">        token[<span class="number">0</span>] = rp[startp];</span><br><span class="line">        token[<span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">        <span class="keyword">for</span>( i = <span class="number">0</span> ; i &lt; <span class="number">16</span> ; i ++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( <span class="built_in">strcmp</span>( token, borderWord[i] ) == <span class="number">0</span> ) &#123;</span><br><span class="line">                    syn = <span class="number">55</span> + i;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        startp ++;</span><br><span class="line">        <span class="keyword">return</span> syn;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*查找字母 即 保留字 种别码1~32 和 标识符 种别码100*/</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( IsLetter(rp[startp]) ) &#123;</span><br><span class="line">            token[count] = rp[startp];</span><br><span class="line">            count ++;</span><br><span class="line">            startp ++;</span><br><span class="line">            <span class="keyword">while</span>( IsLetter(rp[startp]) || IsDigit(rp[startp]) ) &#123;</span><br><span class="line">                token[count++] = rp[startp];</span><br><span class="line">                startp ++;</span><br><span class="line">            &#125;</span><br><span class="line">            token[count] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">            syn =  searchReserve( reserveWord, token );</span><br><span class="line">            <span class="keyword">if</span>( syn == <span class="number">-1</span> ) &#123;</span><br><span class="line">                syn = <span class="number">100</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">return</span> syn;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*查找常数 种别码99*/</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( IsDigit(rp[startp])) &#123;</span><br><span class="line">        ff = <span class="number">0</span>; </span><br><span class="line">        flag = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>( IsDigit(rp[startp]) || rp[startp] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">            <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;.&#x27;</span> ) flag ++;</span><br><span class="line">            <span class="keyword">if</span>( IsLetter(rp[startp + <span class="number">1</span>]) ) &#123;</span><br><span class="line">                token[count] = rp[startp];</span><br><span class="line">                startp ++, count ++;</span><br><span class="line">                <span class="keyword">while</span>( IsLetter(rp[startp]) ) &#123;</span><br><span class="line">                    token[count] = rp[startp];</span><br><span class="line">                    startp ++, count ++;</span><br><span class="line">                &#125; </span><br><span class="line">                ff = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            token[count] = rp[startp];</span><br><span class="line">            count ++;</span><br><span class="line">            startp ++;</span><br><span class="line">            syn = <span class="number">99</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        token[count] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> syn;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查找结束符</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( rp[startp] == <span class="string">&#x27;$&#x27;</span> ) &#123;     </span><br><span class="line">        syn = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> syn;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//错误输出</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>( <span class="string">&quot;错误: %c , 非法字符\n&quot;</span>, ch );</span><br><span class="line">        startp ++;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//读取源程序</span></span><br><span class="line">    <span class="built_in">memset</span>( token, <span class="string">&#x27;\0&#x27;</span>, <span class="keyword">sizeof</span>(token) );</span><br><span class="line">    FILE *fp;</span><br><span class="line">    <span class="keyword">if</span>( ( fp = fopen ( <span class="string">&quot;data.txt&quot;</span>, <span class="string">&quot;r&quot;</span> ) ) == <span class="literal">NULL</span> ) &#123;</span><br><span class="line">        <span class="built_in">printf</span>( <span class="string">&quot;未找到源程序文档data.txt！&quot;</span> );</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//将源程序读入rp数组</span></span><br><span class="line">    rp[startp] = fgetc(fp);</span><br><span class="line">    <span class="keyword">while</span>( rp[startp] != EOF ) &#123;</span><br><span class="line">        startp ++;</span><br><span class="line">        rp[startp] = fgetc(fp);</span><br><span class="line">    &#125;</span><br><span class="line">    fclose(fp);</span><br><span class="line">    endp = Init_Resource(rp);</span><br><span class="line">    startp = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>( syn != <span class="number">0</span> ) &#123;</span><br><span class="line">        <span class="comment">//扫描</span></span><br><span class="line">        syn = Scaning(rp);</span><br><span class="line">        <span class="keyword">if</span>( syn == <span class="number">100</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>( <span class="string">&quot;&lt; %s , %d , 标识符 &gt;\n&quot;</span>, token, syn );</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( syn == <span class="number">99</span> ) &#123;</span><br><span class="line">            <span class="keyword">if</span>( !ff &amp;&amp; flag &lt;= <span class="number">1</span> ) &#123;</span><br><span class="line">                <span class="built_in">printf</span>( <span class="string">&quot;&lt; %s , %d , 常数 &gt;\n&quot;</span>, token, syn );</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>( ff ) &#123;</span><br><span class="line">                <span class="built_in">printf</span>( <span class="string">&quot;错误：%s , 不合法的常数或标识符\n&quot;</span>, token );</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">printf</span>( <span class="string">&quot;错误：%s , 含有多个小数点\n&quot;</span>, token );</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( syn &gt;= <span class="number">1</span> &amp;&amp; syn &lt;= <span class="number">32</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>( <span class="string">&quot;&lt; %s , %d , 保留字 &gt;\n&quot;</span>, reserveWord[syn - <span class="number">1</span>], syn );</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( syn &gt;= <span class="number">33</span> &amp;&amp; syn &lt;= <span class="number">54</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>( <span class="string">&quot;&lt; %s , %d , 运算符 &gt;\n&quot;</span>, operatorWord[syn - <span class="number">33</span>], syn );</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>( syn &gt;= <span class="number">55</span> &amp;&amp; syn &lt;= <span class="number">70</span> ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>( <span class="string">&quot;&lt; %s , %d , 分隔符 &gt;\n&quot;</span>, borderWord[syn - <span class="number">55</span>], syn );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>( flag2 == <span class="number">1</span> )&#123;</span><br><span class="line">       <span class="built_in">printf</span>( <span class="string">&quot;错误：多行注释未闭合\n&quot;</span> );  </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>( <span class="string">&quot;扫描结束！&quot;</span> );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="符号表"><a href="#符号表" class="headerlink" title="符号表"></a>符号表</h1><h2 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h2><table>
+<thead>
+<tr>
+<th align="center">自身值</th>
+<th align="center">种别编码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">auto(key)</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">break(key)</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">case(key)</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">char(key)</td>
+<td align="center">4</td>
+</tr>
+<tr>
+<td align="center">const(key)</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">continue(key)</td>
+<td align="center">6</td>
+</tr>
+<tr>
+<td align="center">default(key)</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">do(key)</td>
+<td align="center">8</td>
+</tr>
+<tr>
+<td align="center">double(key)</td>
+<td align="center">9</td>
+</tr>
+<tr>
+<td align="center">else(key)</td>
+<td align="center">10</td>
+</tr>
+<tr>
+<td align="center">enum(key)</td>
+<td align="center">11</td>
+</tr>
+<tr>
+<td align="center">extern(key)</td>
+<td align="center">12</td>
+</tr>
+<tr>
+<td align="center">float(key)</td>
+<td align="center">13</td>
+</tr>
+<tr>
+<td align="center">for(key)</td>
+<td align="center">14</td>
+</tr>
+<tr>
+<td align="center">goto(key)</td>
+<td align="center">15</td>
+</tr>
+<tr>
+<td align="center">if(key)</td>
+<td align="center">16</td>
+</tr>
+<tr>
+<td align="center">int(key)</td>
+<td align="center">17</td>
+</tr>
+<tr>
+<td align="center">long(key)</td>
+<td align="center">18</td>
+</tr>
+<tr>
+<td align="center">register(key)</td>
+<td align="center">19</td>
+</tr>
+<tr>
+<td align="center">return(key)</td>
+<td align="center">20</td>
+</tr>
+<tr>
+<td align="center">short(key)</td>
+<td align="center">21</td>
+</tr>
+<tr>
+<td align="center">signed(key)</td>
+<td align="center">22</td>
+</tr>
+<tr>
+<td align="center">sizeof(key)</td>
+<td align="center">23</td>
+</tr>
+<tr>
+<td align="center">static(key)</td>
+<td align="center">24</td>
+</tr>
+<tr>
+<td align="center">struct(key)</td>
+<td align="center">25</td>
+</tr>
+<tr>
+<td align="center">switch(key)</td>
+<td align="center">26</td>
+</tr>
+<tr>
+<td align="center">typedef(key)</td>
+<td align="center">27</td>
+</tr>
+<tr>
+<td align="center">union(key)</td>
+<td align="center">28</td>
+</tr>
+<tr>
+<td align="center">unsigned(key)</td>
+<td align="center">29</td>
+</tr>
+<tr>
+<td align="center">void(key)</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">volatile(key)</td>
+<td align="center">31</td>
+</tr>
+<tr>
+<td align="center">while(key)</td>
+<td align="center">32</td>
+</tr>
+</tbody></table>
+<h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><table>
+<thead>
+<tr>
+<th align="center">自身值</th>
+<th align="center">种别编码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">+(op)</td>
+<td align="center">33</td>
+</tr>
+<tr>
+<td align="center">-(op)</td>
+<td align="center">34</td>
+</tr>
+<tr>
+<td align="center">*(op)</td>
+<td align="center">35</td>
+</tr>
+<tr>
+<td align="center">/(op)</td>
+<td align="center">36</td>
+</tr>
+<tr>
+<td align="center">%(op)</td>
+<td align="center">37</td>
+</tr>
+<tr>
+<td align="center">&lt;(relop)</td>
+<td align="center">38</td>
+</tr>
+<tr>
+<td align="center">&gt;(relop)</td>
+<td align="center">39</td>
+</tr>
+<tr>
+<td align="center">=(assign)</td>
+<td align="center">40</td>
+</tr>
+<tr>
+<td align="center">!(logop)</td>
+<td align="center">41</td>
+</tr>
+<tr>
+<td align="center">&amp;(logop)</td>
+<td align="center">42</td>
+</tr>
+<tr>
+<td align="center">(logop)</td>
+<td align="center">43</td>
+</tr>
+<tr>
+<td align="center">^(logop)</td>
+<td align="center">44</td>
+</tr>
+<tr>
+<td align="center">++(op)</td>
+<td align="center">45</td>
+</tr>
+<tr>
+<td align="center">–(op)</td>
+<td align="center">46</td>
+</tr>
+<tr>
+<td align="center">&lt;=(relop)</td>
+<td align="center">47</td>
+</tr>
+<tr>
+<td align="center">&lt;&lt;(logop)</td>
+<td align="center">48</td>
+</tr>
+<tr>
+<td align="center">&gt;=(relop)</td>
+<td align="center">49</td>
+</tr>
+<tr>
+<td align="center">&gt;&gt;(logop)</td>
+<td align="center">50</td>
+</tr>
+<tr>
+<td align="center">==(relop)</td>
+<td align="center">51</td>
+</tr>
+<tr>
+<td align="center">!=(relop)</td>
+<td align="center">52</td>
+</tr>
+<tr>
+<td align="center">&amp;&amp;(logop)</td>
+<td align="center">53</td>
+</tr>
+<tr>
+<td align="center">||(logop)</td>
+<td align="center">54</td>
+</tr>
+</tbody></table>
+<h3 id="注"><a href="#注" class="headerlink" title="注"></a>注</h3><p><code>op</code>     ： 算术运算符</p>
+<p><code>relop</code>  ： 关系运算符</p>
+<p><code>logop</code>  ： 逻辑运算符和位操作运算符</p>
+<p><code>assign</code> ： 赋值运算符</p>
+<h2 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h2><table>
+<thead>
+<tr>
+<th align="center">自身值</th>
+<th align="center">种别编码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">((deli)</td>
+<td align="center">55</td>
+</tr>
+<tr>
+<td align="center">)(deli)</td>
+<td align="center">56</td>
+</tr>
+<tr>
+<td align="center">[(deli)</td>
+<td align="center">57</td>
+</tr>
+<tr>
+<td align="center">](deli)</td>
+<td align="center">58</td>
+</tr>
+<tr>
+<td align="center">{(deli)</td>
+<td align="center">59</td>
+</tr>
+<tr>
+<td align="center">}(deli)</td>
+<td align="center">60</td>
+</tr>
+<tr>
+<td align="center">;(deli)</td>
+<td align="center">61</td>
+</tr>
+<tr>
+<td align="center">,(deli)</td>
+<td align="center">62</td>
+</tr>
+<tr>
+<td align="center">“(deli)</td>
+<td align="center">63</td>
+</tr>
+<tr>
+<td align="center">‘(deli)</td>
+<td align="center">64</td>
+</tr>
+<tr>
+<td align="center">#(deli)</td>
+<td align="center">65</td>
+</tr>
+<tr>
+<td align="center">~(deli)</td>
+<td align="center">66</td>
+</tr>
+<tr>
+<td align="center">(deli)</td>
+<td align="center">67</td>
+</tr>
+<tr>
+<td align="center">.(deli)</td>
+<td align="center">68</td>
+</tr>
+<tr>
+<td align="center">?(deli)</td>
+<td align="center">69</td>
+</tr>
+<tr>
+<td align="center">:(deli)</td>
+<td align="center">70</td>
+</tr>
+</tbody></table>
+<h2 id="常数"><a href="#常数" class="headerlink" title="常数"></a>常数</h2><table>
+<thead>
+<tr>
+<th align="center">自身值</th>
+<th align="center">种别编码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&lt;常数&gt;(num)</td>
+<td align="center">99</td>
+</tr>
+</tbody></table>
+<h2 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h2><table>
+<thead>
+<tr>
+<th align="center">自身值</th>
+<th align="center">种别编码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&lt;标识符&gt;(id)</td>
+<td align="center">100</td>
+</tr>
+</tbody></table>
+<h1 id="测试样例"><a href="#测试样例" class="headerlink" title="测试样例"></a>测试样例</h1><h2 id="data-txt"><a href="#data-txt" class="headerlink" title="data.txt"></a>data.txt</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">include&lt;bitset&gt;</span></span><br><span class="line">//单行注释</span><br><span class="line">float a = 0.6, 1b = 0.3;</span><br><span class="line">float a_b = a/b + 1.5.5; @</span><br><span class="line">float a_b1 = (100 + 1.8a ) * a;</span><br><span class="line">/*闭合的多行注释*/</span><br><span class="line">unsigned short short2 = short1 &lt;&lt; 1;</span><br><span class="line">/*未闭合的多行注释</span><br><span class="line">unsigned short short3 = short1 &gt;&gt; 1;</span><br></pre></td></tr></table></figure>
+
+<h1 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h1><img src="https://free.picui.cn/free/2025/08/26/68ad5709dfc99.png" alt="测试结果" style="zoom: 90%;" />
+
+<style>
+p{
+text-indent:2em;
+}
+</style>
+    </article>
+    <!-- license  -->
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2021/08/02/6-%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9F%A5%E6%89%BE/" title= "二维数组中的查找">
+                    <div class="nextTitle">二维数组中的查找</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2021/05/22/4-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%83%A8%E7%BD%B2k8s%E9%9B%86%E7%BE%A4/" title= "从零开始部署k8s集群">
+                    <div class="prevTitle">从零开始部署k8s集群</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "p5KlOzhAb5PNGyA0Kpv3CkMX-gzGzoHsz",
+        appKey: "O9ffEiE6x6X0dt0nuStUfR9X",
+        placeholder: "",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:ajiang0704@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="https://github.com/AJiang0704" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/pic/wechat.jpg" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/pic/qq.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://space.bilibili.com/26608488" class="iconfont-archer bilibili" target="_blank" title=bilibili></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E4%BB%A3%E7%A0%81"><span class="toc-number">1.</span> <span class="toc-text">程序代码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#LexicalAnalyzer-cpp"><span class="toc-number">1.1.</span> <span class="toc-text">LexicalAnalyzer.cpp</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E8%A1%A8"><span class="toc-number">2.</span> <span class="toc-text">符号表</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">2.1.</span> <span class="toc-text">关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">2.2.</span> <span class="toc-text">运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8"><span class="toc-number">2.2.1.</span> <span class="toc-text">注</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E9%9A%94%E7%AC%A6"><span class="toc-number">2.3.</span> <span class="toc-text">分隔符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E6%95%B0"><span class="toc-number">2.4.</span> <span class="toc-text">常数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="toc-number">2.5.</span> <span class="toc-text">标识符</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%A0%B7%E4%BE%8B"><span class="toc-number">3.</span> <span class="toc-text">测试样例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#data-txt"><span class="toc-number">3.1.</span> <span class="toc-text">data.txt</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="toc-number">4.</span> <span class="toc-text">测试结果</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 13
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2022 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/15</span><a class="archive-post-title" href= "/2022/06/15/13-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8/" >从零开始部署服务器</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/28</span><a class="archive-post-title" href= "/2021/09/28/12-%E5%AF%B9%E7%A7%B0%E7%9A%84%E4%BA%8C%E5%8F%89%E6%A0%91/" >对称的二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/23</span><a class="archive-post-title" href= "/2021/08/23/11-%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91/" >从上往下打印二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/06</span><a class="archive-post-title" href= "/2021/08/06/10-%E7%94%A8%E4%B8%A4%E4%B8%AA%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97/" >用两个栈实现队列</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/05</span><a class="archive-post-title" href= "/2021/08/05/9-%E9%87%8D%E5%BB%BA%E4%BA%8C%E5%8F%89%E6%A0%91/" >重建二叉树</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/04</span><a class="archive-post-title" href= "/2021/08/04/8-%E4%BB%8E%E5%A4%B4%E5%88%B0%E5%B0%BE%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/" >从尾到头打印链表</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/03</span><a class="archive-post-title" href= "/2021/08/03/7-%E6%9B%BF%E6%8D%A2%E7%A9%BA%E6%A0%BC/" >替换空格</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/02</span><a class="archive-post-title" href= "/2021/08/02/6-%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9F%A5%E6%89%BE/" >二维数组中的查找</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/27</span><a class="archive-post-title" href= "/2021/05/27/5-C++%E5%AE%9E%E7%8E%B0%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E7%A8%8B%E5%BA%8F/" >C++实现词法分析程序</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span><a class="archive-post-title" href= "/2021/05/22/4-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%83%A8%E7%BD%B2k8s%E9%9B%86%E7%BE%A4/" >从零开始部署k8s集群</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/26</span><a class="archive-post-title" href= "/2021/03/26/3-%E5%AE%B9%E5%99%A8%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/" >容器相关概念</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/30</span><a class="archive-post-title" href= "/2019/09/30/2-Go%E8%AF%AD%E8%A8%80%E7%9A%84Slice/" >Go语言的Slice</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2017 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/11</span><a class="archive-post-title" href= "/2017/11/11/1-%E6%88%91%E7%9A%84%E9%95%BF%E5%AE%89/" >我的长安</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="剑指Offer"><span class="iconfont-archer">&#xe606;</span>剑指Offer</span>
+    
+        <span class="sidebar-tag-name" data-tags="Golang"><span class="iconfont-archer">&#xe606;</span>Golang</span>
+    
+        <span class="sidebar-tag-name" data-tags="Go语言"><span class="iconfont-archer">&#xe606;</span>Go语言</span>
+    
+        <span class="sidebar-tag-name" data-tags="栈"><span class="iconfont-archer">&#xe606;</span>栈</span>
+    
+        <span class="sidebar-tag-name" data-tags="树"><span class="iconfont-archer">&#xe606;</span>树</span>
+    
+        <span class="sidebar-tag-name" data-tags="队列"><span class="iconfont-archer">&#xe606;</span>队列</span>
+    
+        <span class="sidebar-tag-name" data-tags="Apache"><span class="iconfont-archer">&#xe606;</span>Apache</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
+    
+        <span class="sidebar-tag-name" data-tags="MySQL"><span class="iconfont-archer">&#xe606;</span>MySQL</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="Ubuntu"><span class="iconfont-archer">&#xe606;</span>Ubuntu</span>
+    
+        <span class="sidebar-tag-name" data-tags="随笔"><span class="iconfont-archer">&#xe606;</span>随笔</span>
+    
+        <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
+    
+        <span class="sidebar-tag-name" data-tags="微服务"><span class="iconfont-archer">&#xe606;</span>微服务</span>
+    
+        <span class="sidebar-tag-name" data-tags="k8s"><span class="iconfont-archer">&#xe606;</span>k8s</span>
+    
+        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
+    
+        <span class="sidebar-tag-name" data-tags="编译原理"><span class="iconfont-archer">&#xe606;</span>编译原理</span>
+    
+        <span class="sidebar-tag-name" data-tags="链表"><span class="iconfont-archer">&#xe606;</span>链表</span>
+    
+        <span class="sidebar-tag-name" data-tags="数组"><span class="iconfont-archer">&#xe606;</span>数组</span>
+    
+        <span class="sidebar-tag-name" data-tags="dfs"><span class="iconfont-archer">&#xe606;</span>dfs</span>
+    
+        <span class="sidebar-tag-name" data-tags="字符串"><span class="iconfont-archer">&#xe606;</span>字符串</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="《剑指Offer》的Go语言实现"><span class="iconfont-archer">&#xe60a;</span>《剑指Offer》的Go语言实现</span>
+    
+        <span class="sidebar-category-name" data-categories="技术杂谈"><span class="iconfont-archer">&#xe60a;</span>技术杂谈</span>
+    
+        <span class="sidebar-category-name" data-categories="Go语言学习笔记"><span class="iconfont-archer">&#xe60a;</span>Go语言学习笔记</span>
+    
+        <span class="sidebar-category-name" data-categories="随笔"><span class="iconfont-archer">&#xe60a;</span>随笔</span>
+    
+        <span class="sidebar-category-name" data-categories="C＋＋学习笔记"><span class="iconfont-archer">&#xe60a;</span>C＋＋学习笔记</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "AJiang"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
+     
+    </body>
+</html>
+
+
